@@ -6,6 +6,7 @@ import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Internal imports
+import { FlatListBasics } from '../screens/index';
 import { HomeScreen, SettingsScreen } from '../screens/index';
 import styles from '../styles';
 
@@ -30,7 +31,7 @@ export default function NavigationTabs() {
                     }}
                 >
                 <Tab.Screen
-                    name="Home"
+                    name="CIAO"
                     component={HomeScreen}
                     options={{
                         tabBarIcon: ({ color, size }) => (
@@ -50,6 +51,18 @@ export default function NavigationTabs() {
                         ),
                     }}
                 />
+                   
+                <Tab.Screen
+
+                    name="List"
+                    component={FlatListBasics}
+                    options={{
+                        tabBarIcon: ({ color, size }) => (
+                            <Ionicons name="ios-list" color={color} size={size} />
+                        ),
+                    }}
+                />
+
                 </Tab.Navigator>
             </SafeAreaView>
         </NavigationContainer>

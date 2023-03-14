@@ -8,7 +8,7 @@ import styles from '../styles';
 export default function SettingsScreen() {
     return (
       <View style={styles.container}>
-        <Text>Settings Screen</Text>
+        <Text>Settings ciao</Text>
       </View>
     );
 }
