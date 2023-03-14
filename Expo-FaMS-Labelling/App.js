@@ -2,7 +2,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 // Internal imports
-import NavigationTabs from './NavigationTabs';
+import NavigationTabs from './navigation/NavigationTabs';
 
 export default function App() {
   return (

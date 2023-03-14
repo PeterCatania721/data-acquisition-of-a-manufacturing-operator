@@ -2,15 +2,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import SplashScreen from 'react-native-splash-screen';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Internal imports
-import styles from './styles';
-import HomeScreen from './HomeScreen';
-import SettingsScreen from './SettingsScreen';
+import { HomeScreen, SettingsScreen } from '../screens/index';
+import styles from '../styles';
 
 const Tab = createBottomTabNavigator();
 
