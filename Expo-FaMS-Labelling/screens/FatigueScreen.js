@@ -15,24 +15,27 @@ const data = [
 ];
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1, 
-    flexDirection: "column",
-  },
-  item: {
-    flex: 1,
-    textAlign: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    fontSize: 40,
-  }
+    container: {
+        flex: 1, 
+        flexDirection: "column",
+    },
+    item: {
+        flex: 1,
+        textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        boxShadow: '0px 2px 2px rgba(0,0,0,0.2)',
+    },
+    itemText: {
+        fontSize: 40,
+    },
 })
 
 export default function FatigueScreen() {
   const items = data.map(item => (
     <View key={item.key} style={[styles.item , {backgroundColor: item.color}]}>
-      <Text>{item.key}</Text>
+      <Text style={styles.itemText}>{item.key}</Text>
     </View>
   ));
 
