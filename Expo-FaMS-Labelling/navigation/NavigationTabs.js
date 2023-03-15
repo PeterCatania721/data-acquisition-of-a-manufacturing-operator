@@ -6,8 +6,7 @@ import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Internal imports
-import { FlatListBasics } from '../screens/index';
-import { HomeScreen, SettingsScreen } from '../screens/index';
+import { HomeScreen, SettingsScreen, FatigueScreen } from '../screens/index';
 import styles from '../styles';
 
 const Tab = createBottomTabNavigator();
@@ -55,7 +54,7 @@ export default function NavigationTabs() {
                 <Tab.Screen
 
                     name="List"
-                    component={FlatListBasics}
+                    component={FatigueScreen}
                     options={{
                         tabBarIcon: ({ color, size }) => (
                             <Ionicons name="ios-list" color={color} size={size} />
