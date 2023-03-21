@@ -2,9 +2,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 // Internal imports
-import NavigationTabs from './navigation/NavigationTabs';
 import HomeNavigation from './navigation/HomeNavigation';
-import ConfirmModal from './screens/ConfirmModel';
 
 
 export default function App() {
