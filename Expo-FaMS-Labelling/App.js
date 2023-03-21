@@ -9,7 +9,9 @@ import ConfirmModal from './screens/ConfirmModel';
 
 export default function App() {
   return (
-    <ConfirmModal />
+    <HomeNavigation>
+      
+    </HomeNavigation>
   );
 }
 
