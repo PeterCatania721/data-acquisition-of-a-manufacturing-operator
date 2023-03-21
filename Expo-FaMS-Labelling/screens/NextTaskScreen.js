@@ -2,11 +2,6 @@
 import React, {useState} from 'react';
 import { Text, View, FlatList, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 
-const realm = await Realm.open({
-    path: "realm-files/myrealm",
-    schema: [TaskSchema],
-  });
-
 function NextTaskListItem({ item, index }){
     const buttonStyle = index === 0 ? styles.firstButton : styles.button;
     const buttonTextStyle = index === 0 ? styles.firstButtonText : styles.buttonText;
@@ -19,20 +14,7 @@ function NextTaskListItem({ item, index }){
 
     function handlePress(){
         console.log('pressed: ' + item.title);
-        let task1, task2;
-        realm.write(() => {
-          task1 = realm.create("Task", {
-            _id: 1,
-            name: "go grocery shopping",
-            status: "Open",
-          });
-          task2 = realm.create("Task", {
-            _id: 2,
-            name: "go exercise",
-            status: "Open",
-          });
-          console.log(`created two tasks: ${task1.name} & ${task2.name}`);
-        });
+
     }
 
     return (
