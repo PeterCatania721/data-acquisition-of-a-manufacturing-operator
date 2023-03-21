@@ -14,6 +14,7 @@ const data = [
   {key: '1', color: '#FFFF00'},
 ];
 
+
 const styles = StyleSheet.create({
     container: {
         flex: 1, 
@@ -44,4 +45,7 @@ export default function FatigueScreen() {
       {items}
     </View>
   );
+
+
+
 };
