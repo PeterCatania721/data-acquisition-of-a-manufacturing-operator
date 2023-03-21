@@ -10,8 +10,12 @@ function NextTaskListItem({ item, index }){
     const windowHeight = Dimensions.get('window').height;
     const elementHeight = windowHeight * 0.5;
 
+    function handlePress(){
+        console.log('pressed: ' + item.title);
+    }
+
     return (
-      <TouchableOpacity style={[buttonStyle, index === 0 && {height: elementHeight}]}>
+      <TouchableOpacity onPress={handlePress} style={[buttonStyle, index === 0 && {height: elementHeight}]}>
         <Text style={buttonTextStyle}>{item.title}</Text>
       </TouchableOpacity>
     );
