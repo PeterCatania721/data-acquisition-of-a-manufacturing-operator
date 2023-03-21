@@ -3,10 +3,11 @@ import { StyleSheet, Text, View } from 'react-native';
 
 // Internal imports
 import NavigationTabs from './navigation/NavigationTabs';
+import HomeNavigation from './navigation/HomeNavigation';
 
 export default function App() {
   return (
-    <NavigationTabs />
+    <HomeNavigation />
   );
 }
 
