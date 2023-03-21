@@ -1,5 +1,5 @@
 import React from 'react';
-import { View,StyleSheet, Text } from 'react-native';
+import { View,StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 const data = [
   {key: '10', color: '#FF0000'},
@@ -14,30 +14,22 @@ const data = [
   {key: '1', color: '#FFFF00'},
 ];
 
+function FatigueListItem({ item }){
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1, 
-        flexDirection: "column",
-    },
-    item: {
-        flex: 1,
-        textAlign: 'center',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        boxShadow: '0px 2px 2px rgba(0,0,0,0.2)',
-    },
-    itemText: {
-        fontSize: 40,
-    },
-})
+  function handlePress(){
+    console.log('pressed: ' + item.key);
+  }
 
-export default function FatigueScreen() {
-  const items = data.map(item => (
-    <View key={item.key} style={[styles.item , {backgroundColor: item.color}]}>
+  return (
+    <TouchableOpacity onPress={handlePress} style={[styles.item , {backgroundColor: item.color}]}>
       <Text style={styles.itemText}>{item.key}</Text>
-    </View>
+    </TouchableOpacity>
+  );
+}
+
+function FatigueScreen() {
+  const items = data.map((item) => (
+    <FatigueListItem key={item.key} item={item} />
   ));
 
   return (
@@ -45,7 +37,30 @@ export default function FatigueScreen() {
       {items}
     </View>
   );
-
-
-
 };
+
+const styles = StyleSheet.create({
+  container: {
+      flex: 1, 
+      flexDirection: "column",
+  },
+  item: {
+      flex: 1,
+      textAlign: 'center',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderTopColor: 'gray',
+      borderTopWidth: 0,
+      width: '100%',
+      elevation: 5,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.4,
+      shadowRadius: 4,
+  },
+  itemText: {
+      fontSize: 40,
+  },
+})
+
+export default FatigueScreen;
