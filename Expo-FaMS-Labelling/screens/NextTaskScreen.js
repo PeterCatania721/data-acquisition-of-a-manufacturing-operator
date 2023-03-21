@@ -1,6 +1,6 @@
 // External imports
 import React, {useState} from 'react';
-import { Text, View, FlatList, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { Text, View, FlatList, Modal, TouchableOpacity, StyleSheet,Pressable, Dimensions } from 'react-native';
 
 function NextTaskListItem({ item, index }){
     const buttonStyle = index === 0 ? styles.firstButton : styles.button;
@@ -17,10 +17,42 @@ function NextTaskListItem({ item, index }){
 
     }
 
+    const [modalVisible, setModalVisible] = useState(false);
+
     return (
-      <TouchableOpacity onPress={handlePress} style={[buttonStyle, index === 0 && {height: elementHeight}]}>
+        <View>
+        <Modal 
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Conferma operazione?</Text>
+            <View style={styles.buttonContainer}>
+            <Pressable
+              style={[styles.button1, styles.buttonOpen]}
+              onPress={() => setModalVisible(!modalVisible)}>
+              <Text style={styles.textStyle}>Conferma task</Text>
+            </Pressable>
+            <Pressable
+              style={[styles.button1, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}>
+              <Text style={styles.textStyle}>Esci</Text>
+            </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+        <TouchableOpacity onPress={() => setModalVisible(true)}  style={[buttonStyle, index === 0 && {height: elementHeight}]}>
         <Text style={buttonTextStyle}>{item.title}</Text>
       </TouchableOpacity>
+        </View>
+
     );
 };
 
@@ -48,6 +80,63 @@ function NextTaskScreen() {
 }
 
 const styles = StyleSheet.create({
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 100,
+        
+      },
+      buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+        paddingHorizontal: '10%',
+      },
+      modalView: {
+        
+        width:'80%',
+        height:'50%',
+        backgroundColor: 'white',
+        borderRadius: 20,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        
+      },
+      button1: {
+        
+        width:'30%',
+        height:'300%',
+        borderRadius: 10,
+        elevation: 80,
+        
+      },
+      buttonOpen: {
+        backgroundColor: '#00b347',
+      },
+      buttonClose: {
+        backgroundColor: '#cc0000',
+      },
+      textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        verticalAlign: 'middle',
+       
+      },
+      modalText: {
+        fontSize: 30,
+        paddingTop:'10%',
+        paddingBottom: '10%',
+        textAlign: 'center',
+      },
     container: {
         flex: 1,
         justifyContent: 'center',
