@@ -1,26 +1,31 @@
 // External imports
-import React from 'react';
-import { Text, View, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import React, {useState} from 'react';
+import { Text, View, FlatList, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 
-const renderItem = ({ item, index }) => {
+function NextTaskListItem({ item, index }){
     const buttonStyle = index === 0 ? styles.firstButton : styles.button;
+    const buttonTextStyle = index === 0 ? styles.firstButtonText : styles.buttonText;
+
+    // calculate the height of the first element
+    const windowHeight = Dimensions.get('window').height;
+    const elementHeight = windowHeight * 0.5;
 
     return (
-      <TouchableOpacity style={buttonStyle}>
-        <Text style={styles.buttonText}>{item.title}</Text>
+      <TouchableOpacity style={[buttonStyle, index === 0 && {height: elementHeight}]}>
+        <Text style={buttonTextStyle}>{item.title}</Text>
       </TouchableOpacity>
     );
 };
 
 function NextTaskScreen() {
     const data = [
-        { id: 1, title: 'Very very very very very very very very very very very very long text' },
-        { id: 2, title: 'Button 2' },
-        { id: 3, title: 'Button 3' },
-        { id: 4, title: 'Button 4' },
-        { id: 5, title: 'Button 5' },
-        { id: 6, title: 'Button 6' },
-        { id: 7, title: 'Button 7' },
+        { id: 1, title: 'pulire filtro dell\'aria della ventilazione nord' },
+        { id: 2, title: 'produzione cushinetti 250mm' },
+        { id: 3, title: 'pakaging degli scarti di produzione ' },
+        { id: 4, title: 'Pulizia pavimenti' },
+        { id: 5, title: 'Supervisionare tornio verticale' },
+        { id: 6, title: 'Produzione super manafold' },
+        { id: 7, title: 'Supervisionamento automazione viti' },
     ];
 
     return (
@@ -28,7 +33,7 @@ function NextTaskScreen() {
             <FlatList
                 contentContainerStyle={styles.flatList}
                 data={data}
-                renderItem={renderItem}
+                renderItem={({ item, index }) => <NextTaskListItem item={item} index={index}/>}
                 keyExtractor={(item) => item.id.toString()}
             />
         </View>
@@ -39,11 +44,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
         marginHorizontal: 10,
     },
     flatList: {
-        flexGrow: 1,
+        backgroundColor: 'transparent',
     },
     button: {
         flex: 1,
@@ -54,11 +58,18 @@ const styles = StyleSheet.create({
     },
     firstButton: {
         flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: 'red',
-        paddingVertical: 100,
         paddingHorizontal: 20,
         marginVertical: 10,
         borderRadius: 10,
+    },
+    firstButtonText: {
+        fontSize: 25,
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
     buttonText: {
         fontSize: 20,
