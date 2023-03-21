@@ -6,13 +6,13 @@ function HomeScreen({ navigation }) {
     return (
         <View style={styles.container}>
             <TouchableOpacity
-                style={[styles.button, {backgroundColor: '#ff9966'}]}
+                style={[styles.button, {backgroundColor: '#FF7F00'}]}
                 onPress={() => navigation.navigate('FatigueScreen')}
             >
                 <Text style={styles.buttonText}>Quanto sei stanco?</Text>
             </TouchableOpacity>
             <TouchableOpacity
-                style={[styles.button, {backgroundColor: '#00cc66'}]}
+                style={[styles.button, {backgroundColor: '#609966'}]}
                 onPress={() => navigation.navigate('NextTaskScreen')}
             >
                 <Text style={styles.buttonText}>Prossima Task</Text>

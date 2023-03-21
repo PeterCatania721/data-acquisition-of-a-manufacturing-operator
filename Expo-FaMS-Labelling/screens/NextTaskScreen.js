@@ -10,8 +10,6 @@ function NextTaskListItem({ item, index }){
     const windowHeight = Dimensions.get('window').height;
     const elementHeight = windowHeight * 0.5;
 
-
-
     function handlePress(){
         console.log('pressed: ' + item.title);
 
@@ -147,7 +145,7 @@ const styles = StyleSheet.create({
     },
     button: {
         flex: 1,
-        backgroundColor: 'blue',
+        backgroundColor: '#9DC08B',
         padding: 20,
         marginVertical: 10,
         borderRadius: 10,
@@ -156,20 +154,20 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'red',
+        backgroundColor: '#609966',
         paddingHorizontal: 20,
         marginVertical: 10,
         borderRadius: 10,
     },
     firstButtonText: {
         fontSize: 25,
-        color: 'white',
-        fontWeight: 'bold',
+        color: '#000',
+        fontWeight: '800',
         textAlign: 'center',
     },
     buttonText: {
         fontSize: 20,
-        color: 'white',
+        color: '#212',
         fontWeight: 'bold',
         textAlign: 'center',
     },
