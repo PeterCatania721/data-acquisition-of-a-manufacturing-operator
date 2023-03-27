@@ -11,7 +11,8 @@ const data = [
   {key: '4', color: '#FF9900'},
   {key: '3', color: '#FFB200'},
   {key: '2', color: '#FFCC00'},
-  {key: '1', color: '#FFFF00'},
+  {key: '1', color: '#FFFC00'},
+  {key: '0', color: '#FFFF00'},
 ];
 
 function FatigueListItem({ item }){
@@ -27,7 +28,7 @@ function FatigueListItem({ item }){
   );
 }
 
-function FatigueScreen() {
+function FatigueListScreen() {
   const items = data.map((item) => (
     <FatigueListItem key={item.key} item={item} />
   ));
@@ -63,4 +64,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default FatigueScreen;
+export default FatigueListScreen;
