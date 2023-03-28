@@ -21,7 +21,6 @@ function HomeScreen({ navigation }) {
     );
 }
 
-
 // style for big buttons that navigate to other screens
 const styles = StyleSheet.create({
     container: {
