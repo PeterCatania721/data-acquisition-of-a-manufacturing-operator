@@ -1,43 +1,63 @@
 // External imports
-import React from 'react';
+import React, {useState} from 'react';
 import {Text, View, Modal, TouchableOpacity, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
-function ConfirmationModal({visible, onConfirm, onCancel}){
-  return (
-    <Modal 
-    animationType="slide"
-    transparent={true}
-    visible={visible}
-    onRequestClose={() => {
-      Alert.alert('Modal has been closed.');
-      setModalVisible(!modalVisible);
-    }}>
-      <View style={styles.modalMainContainer}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalTitle}>Prossima Attivita:</Text>
-          <Text style={styles.descriptionText}>Pulire Vetro</Text>
+function ConfirmationModal({title, children, visible, onConfirm, onCancel}){
+  const [actionButtonWidth, setActionButtonWidth] = useState(null);
 
-          <View style={styles.actionButtonsConatainer}>
-            <TouchableOpacity
-              style={[styles.actionButton, styles.buttonOpen]}
-              onPress={onConfirm}>
-              <Icon name="check" style={styles.icon} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.actionButton, styles.buttonClose]}
-              onPress={onCancel}>
-              <Icon name="x" style={styles.icon} />
-            </TouchableOpacity>
+  function handleActionButtonLayout(e) {
+    setActionButtonWidth(e.nativeEvent.layout.width);
+  }
+
+  return (
+    <View>
+      <Modal 
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={() => {
+        Alert.alert('Modal has been closed.');
+        setModalVisible(!modalVisible);
+      }}>
+        <View style={styles.modalMainContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>{title}</Text>
+
+            {children}
+
+            <View style={styles.actionButtonsConatainer}>
+
+              <TouchableOpacity
+                style={[styles.actionButton, styles.buttonOpen, {maxHeight: actionButtonWidth}]}
+                onPress={onConfirm}
+                onLayout={handleActionButtonLayout}>
+
+                <Icon name="check" style={styles.icon} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.actionButton, styles.buttonClose, {maxHeight: actionButtonWidth}]}
+                onPress={onCancel}>
+
+                <Icon name="x" style={styles.icon} />
+              </TouchableOpacity>
+
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   modalMainContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  blurContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -49,7 +69,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    width:'80%',
+    width:'100%',
     height:'50%',
     backgroundColor: 'white',
     borderRadius: 20,
@@ -68,14 +88,6 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     textAlign: 'center',
-  },
-  descriptionText: {
-    fontSize: 30,
-    marginTop: 10,
-    marginBottom: 20,
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: '#f2f2f2',
   },
   actionButton: {
     flex: 1,

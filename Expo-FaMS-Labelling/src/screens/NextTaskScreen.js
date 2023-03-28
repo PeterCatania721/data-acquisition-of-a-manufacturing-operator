@@ -41,8 +41,8 @@ function NextTaskScreen() {
       { id: 7, title: 'Supervisionamento automazione viti' },
   ];
 
-  function handleTaskPress(){
-    //console.log('pressed: ' + item.title);
+  function handleTaskPress(item){
+    console.log('pressed: ' + item.title);
     setConfirmationModalVisible(true);
   }
 
@@ -59,15 +59,19 @@ function NextTaskScreen() {
   return (
       <View style={styles.container}>
           <ConfirmationModal 
+            title="Conferma attività"
             visible={confirmationModalVisible} 
             onConfirm={handleModalConfirm} 
             onCancel={handleModalCancel}
-          />
+          >
+            <Text style={styles.descriptionText}>Pulire Vetro</Text>
+          </ConfirmationModal>
+
           <FlatList
             contentContainerStyle={styles.flatList}
             data={data}
             renderItem={({ item, index }) => 
-              <NextTaskListItem item={item} index={index} onTaskPress={handleTaskPress} />}
+              <NextTaskListItem item={item} index={index} onTaskPress={() => handleTaskPress(item)} />}
             keyExtractor={(item) => item.id.toString()}
           />
       </View>
@@ -170,6 +174,14 @@ const styles = StyleSheet.create({
         color: '#212',
         fontWeight: 'bold',
         textAlign: 'center',
+    },
+    descriptionText: {
+      fontSize: 30,
+      marginTop: 10,
+      marginBottom: 20,
+      padding: 10,
+      borderRadius: 10,
+      backgroundColor: '#f2f2f2',
     },
   });
 
