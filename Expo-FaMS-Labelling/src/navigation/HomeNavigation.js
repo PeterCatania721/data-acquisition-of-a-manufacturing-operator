@@ -34,7 +34,7 @@ function HomeNavigation() {
                     options={{
                         headerTitle: props => (
                           <HeaderTitle style={styles.headerTitle}>
-                            Fatica Percepita
+                            Attivita Corrente
                           </HeaderTitle>
                         ),
                     }}

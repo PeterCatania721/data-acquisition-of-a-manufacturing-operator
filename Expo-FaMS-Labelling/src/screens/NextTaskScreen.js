@@ -1,10 +1,12 @@
 // External imports
 import React, {useState} from 'react';
 import { Text, View, FlatList, Modal, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
+import { BlurView } from 'expo-blur';
+
 
 // Internal imports
 import ConfirmationModal from '../components/modals/ConfirmationModal';
+import { set } from 'react-native-reanimated';
 
 function NextTaskListItem({ item, index, onTaskPress}){
     const buttonStyle = index === 0 ? styles.firstButton : styles.button;
@@ -30,6 +32,7 @@ function NextTaskListItem({ item, index, onTaskPress}){
 
 function NextTaskScreen() {
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
+  const [clickedItemId, setClickedItemId] = useState(1);
 
   const data = [
       { id: 1, title: 'pulire filtro dell\'aria della ventilazione nord' },
@@ -42,29 +45,32 @@ function NextTaskScreen() {
   ];
 
   function handleTaskPress(item){
-    console.log('pressed: ' + item.title);
+    setClickedItemId(item.id);
     setConfirmationModalVisible(true);
   }
 
   function handleModalConfirm(){
-    console.log('confirmed');
     setConfirmationModalVisible(false);
   }
 
   function handleModalCancel(){
-    console.log('cancelled');
     setConfirmationModalVisible(false);
   }
 
   return (
+    <>
+      <BlurView intensity={confirmationModalVisible && 75} tint="dark" style={styles.absoluteBlurView}></BlurView>
       <View style={styles.container}>
+
           <ConfirmationModal 
-            title="Conferma attività"
+            title="Attività Corrente:"
             visible={confirmationModalVisible} 
             onConfirm={handleModalConfirm} 
             onCancel={handleModalCancel}
           >
-            <Text style={styles.descriptionText}>Pulire Vetro</Text>
+            <Text style={styles.descriptionText}>
+              {data.find(item => item.id === clickedItemId).title}
+            </Text>
           </ConfirmationModal>
 
           <FlatList
@@ -74,115 +80,65 @@ function NextTaskScreen() {
               <NextTaskListItem item={item} index={index} onTaskPress={() => handleTaskPress(item)} />}
             keyExtractor={(item) => item.id.toString()}
           />
+          
       </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  modalMainContainer: {
+  absoluteBlurView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
+  container: {
+    flex: 1,
+    position: 'relative',
+    justifyContent: 'center',
+    marginHorizontal: 10,
+  },
+  flatList: {
+      backgroundColor: 'transparent',
+  },
+  button: {
+      flex: 1,
+      backgroundColor: '#9DC08B',
+      padding: 20,
+      marginVertical: 10,
+      borderRadius: 10,
+  },
+  firstButton: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-    },
-    actionButtonsConatainer: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    modalView: {
-      width:'80%',
-      height:'50%',
-      backgroundColor: 'white',
-      borderRadius: 20,
-      padding: '5%',
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5,
-    },
-    modalTitle: {
-      fontSize: 30,
+      backgroundColor: '#609966',
+      paddingHorizontal: 20,
+      marginVertical: 10,
+      borderRadius: 10,
+  },
+  firstButtonText: {
+      fontSize: 25,
+      color: '#000',
+      fontWeight: '800',
+      textAlign: 'center',
+  },
+  buttonText: {
+      fontSize: 20,
+      color: '#212',
       fontWeight: 'bold',
       textAlign: 'center',
-    },
-    descriptionText: {
-      fontSize: 30,
-      marginTop: 10,
-      marginBottom: 20,
-      padding: 10,
-      borderRadius: 10,
-      backgroundColor: '#f2f2f2',
-    },
-    actionButton: {
-      flex: 1,
-      borderRadius: 10,
-      height: '100%',
-      width: '100%',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    buttonOpen: {
-      marginRight: 10,
-      backgroundColor: '#00b347',
-    },
-    buttonClose: {
-      marginLeft: 10,
-      backgroundColor: '#cc0000',
-    },
-    icon: {
-      color: 'white',
-      fontSize: 50,
-    },
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      marginHorizontal: 10,
-    },
-    flatList: {
-        backgroundColor: 'transparent',
-    },
-    button: {
-        flex: 1,
-        backgroundColor: '#9DC08B',
-        padding: 20,
-        marginVertical: 10,
-        borderRadius: 10,
-    },
-    firstButton: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#609966',
-        paddingHorizontal: 20,
-        marginVertical: 10,
-        borderRadius: 10,
-    },
-    firstButtonText: {
-        fontSize: 25,
-        color: '#000',
-        fontWeight: '800',
-        textAlign: 'center',
-    },
-    buttonText: {
-        fontSize: 20,
-        color: '#212',
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    descriptionText: {
-      fontSize: 30,
-      marginTop: 10,
-      marginBottom: 20,
-      padding: 10,
-      borderRadius: 10,
-      backgroundColor: '#f2f2f2',
-    },
-  });
+  },
+  descriptionText: {
+    fontSize: 30,
+    marginTop: 10,
+    marginBottom: 20,
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: '#f2f2f2',
+  },
+});
 
   export default NextTaskScreen;
