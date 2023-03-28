@@ -1,9 +1,5 @@
-// External imports
-import { StyleSheet, Text, View } from 'react-native';
-
 // Internal imports
-import HomeNavigation from './navigation/HomeNavigation';
-
+import HomeNavigation from './src/navigation/HomeNavigation';
 
 export default function App() {
   return (
@@ -11,12 +7,3 @@ export default function App() {
     </HomeNavigation>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

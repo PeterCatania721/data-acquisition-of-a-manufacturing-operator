@@ -1,19 +1,16 @@
 // External imports
-import { Ionicons } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { HeaderTitle } from '@react-navigation/elements';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import { StyleSheet} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Internal imports
 import { HomeScreen, NextTaskScreen, FatigueDoubleListScreen } from '../screens/index';
 
 const Stack = createStackNavigator();
 
-function NavigationTabs() {
+function HomeNavigation() {
 
     return (
         <NavigationContainer>
@@ -54,4 +51,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default NavigationTabs;
+export default HomeNavigation;

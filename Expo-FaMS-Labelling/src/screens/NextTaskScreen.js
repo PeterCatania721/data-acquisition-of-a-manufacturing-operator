@@ -3,7 +3,10 @@ import React, {useState} from 'react';
 import { Text, View, FlatList, Modal, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
-function NextTaskListItem({ item, index }){
+// Internal imports
+import ConfirmationModal from '../components/modals/ConfirmationModal';
+
+function NextTaskListItem({ item, index, onTaskPress}){
     const buttonStyle = index === 0 ? styles.firstButton : styles.button;
     const buttonTextStyle = index === 0 ? styles.firstButtonText : styles.buttonText;
 
@@ -11,46 +14,14 @@ function NextTaskListItem({ item, index }){
     const windowHeight = Dimensions.get('window').height;
     const elementHeight = windowHeight * 0.5;
 
-    function handlePress(){
-        console.log('pressed: ' + item.title);
-
-    }
-
-    const [modalVisible, setModalVisible] = useState(false);
-
     return (
       <View>
-        <Modal 
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
-          <View style={styles.modalMainContainer}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalTitle}>Prossima Attivita:</Text>
-              <Text style={styles.descriptionText}>Pulire Vetro</Text>
+        <TouchableOpacity 
+          onPress={onTaskPress}  
+          style={[buttonStyle, index === 0 && {height: elementHeight}]}>
 
-              <View style={styles.actionButtonsConatainer}>
-                <TouchableOpacity
-                  style={[styles.actionButton, styles.buttonOpen]}
-                  onPress={() => setModalVisible(!modalVisible)}>
-                  <Icon name="check" style={styles.icon} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.actionButton, styles.buttonClose]}
-                  onPress={() => setModalVisible(!modalVisible)}>
-                  <Icon name="x" style={styles.icon} />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
-
-          <TouchableOpacity onPress={() => setModalVisible(true)}  style={[buttonStyle, index === 0 && {height: elementHeight}]}>
           <Text style={buttonTextStyle}>{item.title}</Text>
+
         </TouchableOpacity>
       </View>
 
@@ -58,26 +29,49 @@ function NextTaskListItem({ item, index }){
 };
 
 function NextTaskScreen() {
-    const data = [
-        { id: 1, title: 'pulire filtro dell\'aria della ventilazione nord' },
-        { id: 2, title: 'produzione cushinetti 250mm' },
-        { id: 3, title: 'pakaging degli scarti di produzione ' },
-        { id: 4, title: 'Pulizia pavimenti' },
-        { id: 5, title: 'Supervisionare tornio verticale' },
-        { id: 6, title: 'Produzione super manafold' },
-        { id: 7, title: 'Supervisionamento automazione viti' },
-    ];
+  const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
 
-    return (
-        <View style={styles.container}>
-            <FlatList
-                contentContainerStyle={styles.flatList}
-                data={data}
-                renderItem={({ item, index }) => <NextTaskListItem item={item} index={index}/>}
-                keyExtractor={(item) => item.id.toString()}
-            />
-        </View>
-    );
+  const data = [
+      { id: 1, title: 'pulire filtro dell\'aria della ventilazione nord' },
+      { id: 2, title: 'produzione cushinetti 250mm' },
+      { id: 3, title: 'pakaging degli scarti di produzione ' },
+      { id: 4, title: 'Pulizia pavimenti' },
+      { id: 5, title: 'Supervisionare tornio verticale' },
+      { id: 6, title: 'Produzione super manafold' },
+      { id: 7, title: 'Supervisionamento automazione viti' },
+  ];
+
+  function handleTaskPress(){
+    //console.log('pressed: ' + item.title);
+    setConfirmationModalVisible(true);
+  }
+
+  function handleModalConfirm(){
+    console.log('confirmed');
+    setConfirmationModalVisible(false);
+  }
+
+  function handleModalCancel(){
+    console.log('cancelled');
+    setConfirmationModalVisible(false);
+  }
+
+  return (
+      <View style={styles.container}>
+          <ConfirmationModal 
+            visible={confirmationModalVisible} 
+            onConfirm={handleModalConfirm} 
+            onCancel={handleModalCancel}
+          />
+          <FlatList
+            contentContainerStyle={styles.flatList}
+            data={data}
+            renderItem={({ item, index }) => 
+              <NextTaskListItem item={item} index={index} onTaskPress={handleTaskPress} />}
+            keyExtractor={(item) => item.id.toString()}
+          />
+      </View>
+  );
 }
 
 const styles = StyleSheet.create({
