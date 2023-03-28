@@ -1,6 +1,7 @@
 // External imports
 import React, {useState} from 'react';
-import { Text, View, FlatList, Modal, TouchableOpacity, StyleSheet,Pressable, Dimensions } from 'react-native';
+import { Text, View, FlatList, Modal, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 
 function NextTaskListItem({ item, index }){
     const buttonStyle = index === 0 ? styles.firstButton : styles.button;
@@ -18,7 +19,7 @@ function NextTaskListItem({ item, index }){
     const [modalVisible, setModalVisible] = useState(false);
 
     return (
-        <View>
+      <View>
         <Modal 
         animationType="slide"
         transparent={true}
@@ -27,29 +28,31 @@ function NextTaskListItem({ item, index }){
           Alert.alert('Modal has been closed.');
           setModalVisible(!modalVisible);
         }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Conferma operazione?</Text>
-            <View style={styles.buttonContainer}>
-            <Pressable
-              style={[styles.button1, styles.buttonOpen]}
-              onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={styles.textStyle}>Conferma task</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.button1, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={styles.textStyle}>Esci</Text>
-            </Pressable>
+          <View style={styles.modalMainContainer}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalTitle}>Prossima Attivita:</Text>
+              <Text style={styles.descriptionText}>Pulire Vetro</Text>
+
+              <View style={styles.actionButtonsConatainer}>
+                <TouchableOpacity
+                  style={[styles.actionButton, styles.buttonOpen]}
+                  onPress={() => setModalVisible(!modalVisible)}>
+                  <Icon name="check" style={styles.icon} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.actionButton, styles.buttonClose]}
+                  onPress={() => setModalVisible(!modalVisible)}>
+                  <Icon name="x" style={styles.icon} />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
 
-        <TouchableOpacity onPress={() => setModalVisible(true)}  style={[buttonStyle, index === 0 && {height: elementHeight}]}>
-        <Text style={buttonTextStyle}>{item.title}</Text>
-      </TouchableOpacity>
-        </View>
+          <TouchableOpacity onPress={() => setModalVisible(true)}  style={[buttonStyle, index === 0 && {height: elementHeight}]}>
+          <Text style={buttonTextStyle}>{item.title}</Text>
+        </TouchableOpacity>
+      </View>
 
     );
 };
@@ -78,67 +81,71 @@ function NextTaskScreen() {
 }
 
 const styles = StyleSheet.create({
-    centeredView: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 100,
-        
+  modalMainContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    actionButtonsConatainer: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalView: {
+      width:'80%',
+      height:'50%',
+      backgroundColor: 'white',
+      borderRadius: 20,
+      padding: '5%',
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
       },
-      buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-        paddingHorizontal: '10%',
-      },
-      modalView: {
-        
-        width:'80%',
-        height:'50%',
-        backgroundColor: 'white',
-        borderRadius: 20,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-        
-      },
-      button1: {
-        
-        width:'30%',
-        height:'300%',
-        borderRadius: 10,
-        elevation: 80,
-        
-      },
-      buttonOpen: {
-        backgroundColor: '#00b347',
-      },
-      buttonClose: {
-        backgroundColor: '#cc0000',
-      },
-      textStyle: {
-        color: 'white',
-        fontWeight: 'bold',
-        textAlign: 'center',
-        verticalAlign: 'middle',
-       
-      },
-      modalText: {
-        fontSize: 30,
-        paddingTop:'10%',
-        paddingBottom: '10%',
-        textAlign: 'center',
-      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    modalTitle: {
+      fontSize: 30,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    descriptionText: {
+      fontSize: 30,
+      marginTop: 10,
+      marginBottom: 20,
+      padding: 10,
+      borderRadius: 10,
+      backgroundColor: '#f2f2f2',
+    },
+    actionButton: {
+      flex: 1,
+      borderRadius: 10,
+      height: '100%',
+      width: '100%',
+      maxHeight
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    buttonOpen: {
+      marginRight: 10,
+      backgroundColor: '#00b347',
+    },
+    buttonClose: {
+      marginLeft: 10,
+      backgroundColor: '#cc0000',
+    },
+    icon: {
+      color: 'white',
+      fontSize: 50,
+    },
     container: {
-        flex: 1,
-        justifyContent: 'center',
-        marginHorizontal: 10,
+      flex: 1,
+      justifyContent: 'center',
+      marginHorizontal: 10,
     },
     flatList: {
         backgroundColor: 'transparent',
