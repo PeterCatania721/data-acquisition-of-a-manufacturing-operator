@@ -1,12 +1,11 @@
 // External imports
 import React, {useState} from 'react';
-import { Text, View, FlatList, Modal, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { Text, View, FlatList, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { BlurView } from 'expo-blur';
 
 
 // Internal imports
 import ConfirmationModal from '../components/modals/ConfirmationModal';
-import { set } from 'react-native-reanimated';
 
 function NextTaskListItem({ item, index, onTaskPress}){
     const buttonStyle = index === 0 ? styles.firstButton : styles.button;
@@ -59,7 +58,11 @@ function NextTaskScreen() {
 
   return (
     <>
-      <BlurView intensity={confirmationModalVisible && 75} tint="dark" style={styles.absoluteBlurView}></BlurView>
+      <BlurView 
+        intensity={confirmationModalVisible && 75} 
+        tint="dark" 
+        style={styles.absoluteBlurView}/>
+
       <View style={styles.container}>
 
           <ConfirmationModal 
