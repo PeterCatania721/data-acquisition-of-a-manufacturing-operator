@@ -1,7 +1,12 @@
-import React from 'react';
+// External imports
+import React,{useState} from 'react';
 import { View,StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
+import { BlurView } from 'expo-blur';
 
-const data = [
+// Internal imports
+import ConfirmationModal from '../components/modals/ConfirmationModal';
+
+const fatigueValues = [
   {key: '10', color: '#FF0000'},
   {key: '9', color: '#FF1900'},
   {key: '8', color: '#FF3200'},
@@ -15,66 +20,119 @@ const data = [
   {key: '0', color: '#FFFFAA'},
 ];
 
-function FatigueListItem({ item }){
-
-  function handlePress(){
-    console.log('pressed: ' + item.key);
-  }
+function FatigueListItem({ item, onFatiguePress}){
 
   return (
-    <TouchableOpacity onPress={handlePress} style={[styles.item , {backgroundColor: item.color}]}>
+    <TouchableOpacity 
+      onPress={() => onFatiguePress(item)} 
+      style={[styles.item , {backgroundColor: item.color}]}
+    >
       <Text style={styles.itemText}>{item.key}</Text>
     </TouchableOpacity>
   );
 }
 
 function FatigueDoubleListScreen() {
+  const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
+  const [clickedFatigueKey, setClickedFatigueKey] = useState(0);
+
+  function handleFatiguePress(item){
+    setClickedFatigueKey(item.key);
+    setConfirmationModalVisible(true);
+  }
+
+  function handleModalConfirm(){
+    setConfirmationModalVisible(false);
+  }
+
+  function handleModalCancel(){
+    setConfirmationModalVisible(false);
+  }
+
   // calculate the height of the first element
   const windowHeight = Dimensions.get('window').height;
-  const oddItemHeight = windowHeight * (1 / Math.ceil(data.length / 2));
+  const oddItemHeight = windowHeight * (1 / Math.ceil(fatigueValues.length / 2));
 
-  // Check if the length of the data array is odd
-  const isOdd = data.length % 2 === 1;
+  // Check if the length of the fatigueValues array is odd
+  const isOdd = fatigueValues.length % 2 === 1;
 
-  const half = isOdd ? Math.floor(data.length / 2) : data.length / 2;
+  const half = isOdd ? Math.floor(fatigueValues.length / 2) : fatigueValues.length / 2;
   
-  const leftColumn = data.slice(0, half).map((item) => (
-    <FatigueListItem key={item.key} item={item} />
+  const leftColumn = fatigueValues.slice(0, half).map((item) => (
+    <FatigueListItem onFatiguePress={handleFatiguePress} key={item.key} item={item} />
   ));
-  const rightColumn = data.slice(half,data.length-1).map((item) => (
-    <FatigueListItem key={item.key} item={item} />
+  const rightColumn = fatigueValues.slice(half,fatigueValues.length-1).map((item) => (
+    <FatigueListItem onFatiguePress={handleFatiguePress} key={item.key} item={item} />
   ));
 
   if(isOdd)
     return (
-      <View style={styles.container}>
-        <View style={styles.columnsContainer}>
-          <View style={styles.column}>
-          {leftColumn}
+      <>
+        <BlurView 
+        intensity={confirmationModalVisible && 75} 
+        tint="dark" 
+        style={styles.absoluteBlurView}/>
+
+        <View style={styles.container}>
+          <ConfirmationModal 
+            title="Fatica Percepita:"
+            visible={confirmationModalVisible} 
+            onConfirm={handleModalConfirm} 
+            onCancel={handleModalCancel}
+          >
+            <Text style={styles.descriptionText}>
+              {fatigueValues.find(item => item.key == clickedFatigueKey).key}
+            </Text>
+          </ConfirmationModal>
+          
+          <View style={styles.columnsContainer}>
+            <View style={styles.column}>
+            {leftColumn}
+            </View>
+            <View style={styles.column}>
+              {rightColumn}
+            </View>
           </View>
-          <View style={styles.column}>
-            {rightColumn}
+          <View style={[styles.oddItemContainer,{height: oddItemHeight}]}>
+            <FatigueListItem 
+              style={styles.oddItem} 
+              item={fatigueValues[fatigueValues.length-1]}
+              onFatiguePress={handleFatiguePress} 
+            />
           </View>
         </View>
-        <View style={[styles.oddItemContainer,{height: oddItemHeight}]}>
-          <FatigueListItem style={styles.oddItem} item={data[data.length-1]} />
-        </View>
-      </View>
+      </>
     );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.column}>
-        {leftColumn}
+    <>
+      <BlurView 
+        intensity={confirmationModalVisible && 75} 
+        tint="dark" 
+        style={styles.absoluteBlurView}/>
+
+      <View style={styles.container}>
+        
+        <View style={styles.column}>
+          {leftColumn}
+        </View>
+        <View style={styles.column}>
+          {rightColumn}
+        </View>
       </View>
-      <View style={styles.column}>
-        {rightColumn}
-      </View>
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
+  absoluteBlurView: {
+    position: 'absolute',
+    
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
   container: {
       flex: 1,   
   },
@@ -102,6 +160,14 @@ const styles = StyleSheet.create({
   },
   itemText: {
       fontSize: 40,
+  },
+  descriptionText: {
+    fontSize: 30,
+    marginTop: 10,
+    marginBottom: 20,
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: '#f2f2f2',
   },
 });
 
