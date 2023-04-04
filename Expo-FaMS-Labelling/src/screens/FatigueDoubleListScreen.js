@@ -33,10 +33,10 @@ function FatigueListItem({ item, onFatiguePress}){
   );
 }
 
-function FatigueDoubleListScreen() {
+function FatigueDoubleListScreen({ navigation }) {
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
   const [clickedFatigueKey, setClickedFatigueKey] = useState(0);
-  const [optionaText, onChangeOptionalText] = React.useState('');
+  const [optionaText, setOptionalText] = React.useState('');
 
   function handleFatiguePress(item){
     setClickedFatigueKey(item.key);
@@ -45,10 +45,13 @@ function FatigueDoubleListScreen() {
 
   function handleModalConfirm(){
     setConfirmationModalVisible(false);
+    //go to the screen with task list
+    navigation.navigate('NextTaskScreen');
   }
 
   function handleModalCancel(){
     setConfirmationModalVisible(false);
+    setOptionalText('');
   }
 
   // calculate the height of the first element
@@ -87,7 +90,7 @@ function FatigueDoubleListScreen() {
             </Text>
             <TextInput 
               style={styles.input} 
-              onChangeText={onChangeOptionalText} 
+              onChangeText={setOptionalText} 
               value={optionaText} 
               placeholder="Commento Opzionale ..."
             />

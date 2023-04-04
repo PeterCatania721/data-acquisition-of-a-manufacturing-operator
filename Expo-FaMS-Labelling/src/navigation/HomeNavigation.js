@@ -15,9 +15,13 @@ function HomeNavigation() {
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Home">
-                <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen 
-                    name="FatigueScreen" 
+                    name="Home" 
+                    component={HomeScreen} 
+                />
+
+                <Stack.Screen 
+                    name="Fatica" 
                     component={FatigueDoubleListScreen} 
                     options={{
                         headerTitle: props => (
@@ -25,6 +29,7 @@ function HomeNavigation() {
                             Fatica Percepita
                           </HeaderTitle>
                         ),
+
                     }}
                 />
 

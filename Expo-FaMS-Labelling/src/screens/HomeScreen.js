@@ -7,7 +7,7 @@ function HomeScreen({ navigation }) {
         <View style={styles.container}>
             <TouchableOpacity
                 style={[styles.button, {backgroundColor: '#FF7F00'}]}
-                onPress={() => navigation.navigate('FatigueScreen')}
+                onPress={() => navigation.navigate('Fatica')}
             >
                 <Text style={styles.buttonText}>Quanto sei stanco?</Text>
             </TouchableOpacity>
