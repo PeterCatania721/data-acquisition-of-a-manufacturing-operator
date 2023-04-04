@@ -5,6 +5,7 @@ import { BlurView } from 'expo-blur';
 
 // Internal imports
 import ConfirmationModal from '../components/modals/ConfirmationModal';
+import { TextInput } from 'react-native-gesture-handler';
 
 const fatigueValues = [
   {key: '10', color: '#FF0000'},
@@ -35,6 +36,7 @@ function FatigueListItem({ item, onFatiguePress}){
 function FatigueDoubleListScreen() {
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
   const [clickedFatigueKey, setClickedFatigueKey] = useState(0);
+  const [optionaText, onChangeOptionalText] = React.useState('');
 
   function handleFatiguePress(item){
     setClickedFatigueKey(item.key);
@@ -83,6 +85,13 @@ function FatigueDoubleListScreen() {
             <Text style={styles.descriptionText}>
               {fatigueValues.find(item => item.key == clickedFatigueKey).key}
             </Text>
+            <TextInput 
+              style={styles.input} 
+              onChangeText={onChangeOptionalText} 
+              value={optionaText} 
+              placeholder="Commento Opzionale ..."
+            />
+
           </ConfirmationModal>
           
           <View style={styles.columnsContainer}>
@@ -169,6 +178,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#f2f2f2',
   },
+  input: {
+    height: 50,
+    fontSize: 25,
+    marginBottom: 20,
+    borderWidth: 1,
+    padding: 10,
+    width: '100%',
+  }
 });
 
 export default FatigueDoubleListScreen;
