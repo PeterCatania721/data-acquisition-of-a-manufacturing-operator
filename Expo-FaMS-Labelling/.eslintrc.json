@@ -1,5 +1,0 @@
-{
-    "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:import/errors", "plugin:import/warnings", "plugin:newline/recommended"],
-    "plugins": ["react", "import", "newline"],
-    "rules": {}
-}
