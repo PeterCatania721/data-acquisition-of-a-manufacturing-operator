@@ -20,7 +20,6 @@ export function normalize(size) {
 }
 
 function LoginPage ({ navigation }) {
-  const [id, setId] = useState('');
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
@@ -38,7 +37,6 @@ function LoginPage ({ navigation }) {
   const [invalidId, setInvalidId] = useState(false);
 
   const handleLogin = () => {
-    setId(value);
     console.log(value);
     if (value === null) {
       setInvalidId(true);
@@ -47,7 +45,7 @@ function LoginPage ({ navigation }) {
       setInvalidId(false);
     }
 
-    navigation.navigate('Home', { id });
+    navigation.navigate('Home', {id: value});
   }
 
   return (
