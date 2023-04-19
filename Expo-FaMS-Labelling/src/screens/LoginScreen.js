@@ -1,23 +1,16 @@
+// External imports
 import React, { useState } from 'react';
-import { View, Dimensions, Platform, PixelRatio, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, Dimensions, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
+// Intrenal imports
+import {normalize} from '../utils/resizingUtils';
+
+// Global variables
 const {
   width: SCREEN_WIDTH,
   height: SCREEN_HEIGHT,
 } = Dimensions.get('window');
-
-// based on iphone 5s's scale
-const scale = SCREEN_WIDTH / 320;
-
-export function normalize(size) {
-  const newSize = size * scale 
-  if (Platform.OS === 'ios') {
-    return Math.round(PixelRatio.roundToNearestPixel(newSize))
-  } else {
-    return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2
-  }
-}
 
 function LoginPage ({ navigation }) {
   const [open, setOpen] = useState(false);
@@ -65,47 +58,44 @@ function LoginPage ({ navigation }) {
         setOpen={setOpen}
         setValue={setValue}
         setItems={setItems}
-        listItemLabelStyle={{
-          fontSize: normalize(15),
-        }}
-        labelStyle={[
-          { fontSize: normalize(15)}, 
-          invalidId && styles.invalidId
-        ]}
+        textStyle={ { fontSize: normalize(20, SCREEN_WIDTH)} }
+        mode="SIMPLE"
+        listMode="SCROLLVIEW"
+
+        labelStyle={ invalidId && styles.invalidId }
         labelContainerStyle={ invalidId && styles.invalidId }
 
-        placeholderStyle={[
-          { fontSize: normalize(15)}, 
-          invalidId && styles.invalidId
-        ]}
-        selectedItemContainerStyle={{
-          backgroundColor: "lightblue"
-        }}
-        selectedItemLabelStyle={{
-          fontWeight: "bold"
-        }}
+        placeholderStyle={ invalidId && styles.invalidId }
+
+        selectedItemLabelStyle={{ fontWeight: "bold" }}
       />
 
-      <TouchableOpacity 
-        style={styles.button} 
-        onPress={handleLogin}
-      >
-        <Text style={styles.buttonText}>Accedi</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity 
+          style={styles.button} 
+          onPress={handleLogin}
+        >
+          <Text style={styles.buttonText}>Accedi</Text>
+        </TouchableOpacity>
+      </View>
+
     </View>
   );
 };
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    fleyDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     alignContent: 'center',
     alignSelf: 'center',
+    width: '95%',
   },
   title: {
-    fontSize: normalize(28),
+    fontSize: normalize(40, SCREEN_WIDTH),
     fontWeight: 'bold',
     marginBottom: 32,
   },
@@ -117,28 +107,36 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     padding: 8,
   },
+  buttonContainer: {
+    width: '100%',
+    height: '20%',
+    justifyContent: 'center',
+    marginTop: 32,
+  },
   button: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'blue',
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 8,
-    marginTop: 16,
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
     fontWeight: 'bold',
-    fontSize: normalize(30),
+    fontSize: normalize(40, SCREEN_WIDTH),
   },
   IdDropdown: {
-    width: '95%',
+    width: '100%',
   },
   invalidId: {
     borderColor: "rgba(255, 0, 0, 0.5)",
   },
   errorMsg: {
     color: "red",
-    fontSize: normalize(15),
+    fontSize: normalize(15, SCREEN_WIDTH),
     fontWeight: "bold",
     marginBottom: 8,
   },

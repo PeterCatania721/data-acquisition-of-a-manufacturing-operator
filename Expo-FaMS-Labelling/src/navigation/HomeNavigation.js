@@ -3,15 +3,20 @@ import { NavigationContainer } from '@react-navigation/native';
 import { HeaderTitle } from '@react-navigation/elements';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import { StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 
 // Internal imports
 import { LoginScreen, HomeScreen, NextTaskScreen, FatigueDoubleListScreen } from '../screens/index';
+import {normalize} from '../utils/resizingUtils';
 
+// Global variables
+const {
+  width: SCREEN_WIDTH,
+  height: SCREEN_HEIGHT,
+} = Dimensions.get('window');
 const Stack = createStackNavigator();
 
 function HomeNavigation() {
-
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Login">
@@ -73,7 +78,7 @@ function HomeNavigation() {
 const styles = StyleSheet.create({
     headerTitle: {
         color: 'black',
-        fontSize: 24,
+        fontSize: normalize(23, SCREEN_WIDTH),
     },
 });
 

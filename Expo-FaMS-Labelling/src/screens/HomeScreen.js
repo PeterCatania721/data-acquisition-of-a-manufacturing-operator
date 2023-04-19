@@ -2,9 +2,15 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity,  Dimensions} from 'react-native';
 
-const { width } = Dimensions.get('window');
-const viewWidth = width * 0.95;
+// Intrenal imports
+import {normalize} from '../utils/resizingUtils';
 
+// Global variables
+const {
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
+} = Dimensions.get('window');
+const viewWidth = '95%';
 
 function HomeScreen({ navigation, route}) {
     const { id } = route.params;
@@ -12,7 +18,7 @@ function HomeScreen({ navigation, route}) {
 
     return (
         <View style={styles.container}>
-            <View>
+            <View style={styles.idLabelContainer}>
                 <Text style={styles.idLabel}>Il tuo Id: <Text style={styles.boldText}>{id}</Text></Text> 
             </View>
             <View style={styles.buttonCountainer}>
@@ -27,21 +33,24 @@ function HomeScreen({ navigation, route}) {
     );
 }
 
-// style for big buttons that navigate to other screens
+// Styles
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        width: '100%',
+        
     },
     buttonCountainer: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        width: '100%',
     },
     button: {
         width: viewWidth,
-        height: '30%',
+        height: '50%',
         justifyContent: 'center',
         backgroundColor: '#4CAF50',
         borderRadius: 10,
@@ -49,18 +58,23 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: '#FFFFFF',
-        fontSize: 20,
+        fontSize: normalize(28, SCREEN_WIDTH),
         fontWeight: 'bold',
         textAlign: 'center',
     },
+    idLabelContainer: {
+        alignItems: 'center',
+        justifyContent: 'top',
+        width: '100%',
+    },
     idLabel: {
-        fontSize: 30,
+        fontSize: normalize(28, SCREEN_WIDTH),
         textAlign: 'center',
         marginTop: 20,
         width: viewWidth,
     },
     boldText: {
-        fontSize: 30,
+        fontSize: normalize(28, SCREEN_WIDTH),
         fontWeight: 'bold',
         textAlign: 'center',
     },
