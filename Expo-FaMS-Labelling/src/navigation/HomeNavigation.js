@@ -6,7 +6,7 @@ import React from 'react';
 import { StyleSheet} from 'react-native';
 
 // Internal imports
-import { HomeScreen, NextTaskScreen, FatigueDoubleListScreen } from '../screens/index';
+import { LoginScreen, HomeScreen, NextTaskScreen, FatigueDoubleListScreen } from '../screens/index';
 
 const Stack = createStackNavigator();
 
@@ -14,10 +14,31 @@ function HomeNavigation() {
 
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Home">
+            <Stack.Navigator initialRouteName="Login">
+                <Stack.Screen 
+                    name="Login" 
+                    component={LoginScreen} 
+                    options={{
+                        headerTitle: props => (
+                          <HeaderTitle style={styles.headerTitle}>
+                            Login
+                          </HeaderTitle>
+                        ),
+
+                    }}
+                />
+
                 <Stack.Screen 
                     name="Home" 
                     component={HomeScreen} 
+                    options={{
+                        headerTitle: props => (
+                          <HeaderTitle style={styles.headerTitle}>
+                            Home
+                          </HeaderTitle>
+                        ),
+
+                    }}
                 />
 
                 <Stack.Screen 

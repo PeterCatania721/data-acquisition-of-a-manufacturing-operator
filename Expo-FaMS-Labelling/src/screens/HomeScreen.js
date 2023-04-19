@@ -2,21 +2,20 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 
-function HomeScreen({ navigation }) {
+function HomeScreen({ navigation, id}) {
     return (
-        <View style={styles.container}>
-            <TouchableOpacity
-                style={[styles.button, {backgroundColor: '#FF7F00'}]}
-                onPress={() => navigation.navigate('Fatica')}
-            >
-                <Text style={styles.buttonText}>Quanto sei stanco?</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={[styles.button, {backgroundColor: '#609966'}]}
-                onPress={() => navigation.navigate('NextTaskScreen')}
-            >
-                <Text style={styles.buttonText}>Prossima Task</Text>
-            </TouchableOpacity>
+        <View >
+            <View>
+                
+            </View>
+            <View style={styles.container}>
+                <TouchableOpacity
+                    style={[styles.button, {backgroundColor: '#FF7F00'}]}
+                    onPress={() => navigation.navigate('Fatica')}
+                >
+                    <Text style={styles.buttonText}>Quanto sei stanco?</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
