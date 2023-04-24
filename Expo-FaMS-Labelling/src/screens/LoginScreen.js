@@ -1,6 +1,6 @@
 // External imports
-import React, { useState, useEffect } from 'react';
-import { View, Dimensions, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useRef} from 'react';
+import { View, Dimensions, TouchableOpacity, Text, StyleSheet, Animated} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -18,35 +18,56 @@ const LOGGED_USER_KEY = 'loggedUser';
 function LoginPage ({ navigation }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    {label: '1ce9eb44-0188-4b4b-829c-d1b72972e657', value: '1ce9eb44-0188-4b4b-829c-d1b72972e657'},
-    {label: '34af5bca-be06-4f1f-a2bb-f228546fc558', value: '34af5bca-be06-4f1f-a2bb-f228546fc558'},
-    {label: '6591c7f4-26a7-4e03-80fe-176a33f77ca4', value: '6591c7f4-26a7-4e03-80fe-176a33f77ca4'},
-    {label: 'a9975884-1dbb-41af-a4c1-fc03b57c90e9', value: 'a9975884-1dbb-41af-a4c1-fc03b57c90e9'},
-    {label: 'c453a020-1a2f-47aa-8ab3-a9600b535d24', value: 'c453a020-1a2f-47aa-8ab3-a9600b535d24'},
-    {label: '8f7156a8-0c8e-4f05-9304-eed97a50d6d3', value: '8f7156a8-0c8e-4f05-9304-eed97a50d6d3'},
-    {label: 'd4c25336-114d-4663-8034-77caa1eb5da5', value: 'd4c25336-114d-4663-8034-77caa1eb5da5'},
-    {label: 'd6f9879b-9834-40f2-a435-11ccf3447ce3', value: 'd6f9879b-9834-40f2-a435-11ccf3447ce3'},
-    {label: '0bdf6073-fd2c-4232-8c8b-cec09e192595', value: '0bdf6073-fd2c-4232-8c8b-cec09e192595'},
-    {label: 'f1e368ad-76bb-403e-b2c4-32f73f300508', value: 'f1e368ad-76bb-403e-b2c4-32f73f300508'},
-  ]);
+  const [items, setItems] = useState([]);
   const [invalidId, setInvalidId] = useState(false);
   const [users, setUsers] = useState([]);
   const [loggedUser, setLoggedUser] = useState(null);
+  
+  // when the screen is focused again, execute logout
+  useEffect(() => {
+    const logout = navigation.addListener('focus', () => {
+      // Screen was focused
+      // Do something
+      AsyncStorage.removeItem(LOGGED_USER_KEY);
+      setLoggedUser(null);
+      setValue(null);
 
+      console.log("back pressed2");
+    });
+
+    return logout;
+  }, [navigation]);
+
+  // on mount, get users from db
   useEffect(() => {
     axios.get('http://localhost:4000/api/v1/getUser')
-    .then(res => setUsers(Object.values(JSON.parse(JSON.stringify(res.data)))))
-    .catch(err => { 
-      console.log(err)
-      console.log("aaaa");
-    });
+    .then(res => setUsers(res.data.users))
+    .catch(err => console.log(err));
+
+    // get logged user from async storage
+    AsyncStorage.getItem(LOGGED_USER_KEY)
+    .then(res => {
+      if (res !== null) {
+        setLoggedUser(res);
+
+      }
+    })
   }, []);
+
+  // when users are updated, update items in dropdown
+  useEffect(() => {
+    if (users.length > 0) {
+      let newItems = [];
+      users.forEach(user => {
+        newItems.push({label: user.idUser, value: user.idUser});
+      });
+      setItems(newItems);
+    }
+  }, [users]);
 
   // when logged user is changed, save it in async storage
   // ang go to home screen
   useEffect(() => {
-    console.log("Logged user: " + loggedUser);
     if (loggedUser !== null && loggedUser !== undefined) {
       AsyncStorage.setItem(LOGGED_USER_KEY, loggedUser);
       navigation.navigate('Home', {id: loggedUser});
@@ -58,27 +79,19 @@ function LoginPage ({ navigation }) {
     if (value === null) {
       setInvalidId(true);
       return;
-    } else {
-      setInvalidId(false);
     }
+    setInvalidId(false);
+
+    // update logged user
+    setLoggedUser(value);
 
     navigation.navigate('Home', {id: value});
   }
 
   const handleRegister = () => {
-    //console.log(users);
-    // get json first element
-    //console.log(users[1][0].idUser);
-
     //post create user, and than update users
     axios.post('http://localhost:4000/api/v1/createUser')
     .then(res => {
-      if (res.data.user.idUser === undefined) {
-        console.log("Error creating user");
-        console.log(res.data);
-        return;
-      }
-
       setLoggedUser(res.data.user.idUser);
     })
     .catch(err => {throw err});
@@ -124,10 +137,10 @@ function LoginPage ({ navigation }) {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
-          style={styles.button} 
+          style={[styles.button, styles.buttonRegister]} 
           onPress={handleRegister}
         >
-          <Text style={styles.buttonText}>Registrati</Text>
+          <Text style={[styles.buttonText,styles.buttonTextRegister]}>Registrati</Text>
         </TouchableOpacity>
       </View>
 
@@ -175,10 +188,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 8,
   },
+  buttonRegister: {
+    backgroundColor: 'white',
+    borderColor: 'blue',
+    borderWidth: 7,
+    color: 'black',
+  },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: normalize(40, SCREEN_WIDTH),
+  },
+  buttonTextRegister: {
+    color: 'blue',
   },
   IdDropdown: {
     width: '100%',

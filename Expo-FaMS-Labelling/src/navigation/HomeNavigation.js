@@ -29,7 +29,6 @@ function HomeNavigation() {
                             Login
                           </HeaderTitle>
                         ),
-
                     }}
                 />
 
@@ -42,7 +41,7 @@ function HomeNavigation() {
                             Home
                           </HeaderTitle>
                         ),
-
+                        headerBackTitle: 'logout',
                     }}
                 />
 
@@ -55,7 +54,6 @@ function HomeNavigation() {
                             Fatica Percepita
                           </HeaderTitle>
                         ),
-
                     }}
                 />
 
