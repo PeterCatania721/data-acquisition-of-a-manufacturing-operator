@@ -41,6 +41,10 @@ function LoginPage ({ navigation }) {
     navigation.navigate('Home', {id: value});
   }
 
+  const handleRegister = () => {
+    
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Scegli il tuo ID</Text>
@@ -76,6 +80,15 @@ function LoginPage ({ navigation }) {
           onPress={handleLogin}
         >
           <Text style={styles.buttonText}>Accedi</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity 
+          style={styles.button} 
+          onPress={handleRegister}
+        >
+          <Text style={styles.buttonText}>Registrati</Text>
         </TouchableOpacity>
       </View>
 
