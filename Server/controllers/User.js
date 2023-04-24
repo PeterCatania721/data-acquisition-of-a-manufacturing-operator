@@ -2,6 +2,7 @@ import { User } from "../model/userModel.js";
 import { Task } from "../model/taskModel.js";
 import { Fatigue } from "../model/fatigueModel.js";
 import { randomUUID } from "crypto";
+import { TaskModel } from "../model/taskSchemaModel.js";
 
 
 export const allUser = async (req, res) => {
@@ -57,6 +58,52 @@ if(users.length === 0){
  *   add fatigue to user
  * 
   */
+
+
+// getTaskByGroup 
+export const getTaskByGroup = async (req, res) => {
+
+  const group = req.params.group;
+
+  try {
+    const tasks = await TaskModel.find({group : group});
+    res.status(200).json({ tasks });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+
+}
+
+
+export const getTask = async (req, res) => {
+
+  try {
+    const tasks = await TaskModel.find();
+    res.status(200).json({ tasks });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+
+
+}
+
+export const addingDefaultTasks = async (req, res) => {
+
+  const {nameTask,group} = req.body;
+
+  let tasks = await TaskModel.create({
+
+    nameTask: nameTask,
+    group: group,
+
+  });
+  
+  await tasks.save();
+
+  res.status(201).json({ success: true, tasks });
+
+
+};
 
 export const fatigue = async (req, res) => {
 
