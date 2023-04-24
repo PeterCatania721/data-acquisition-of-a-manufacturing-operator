@@ -1,7 +1,9 @@
 // External imports
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Dimensions, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 // Intrenal imports
 import {normalize} from '../utils/resizingUtils';
@@ -11,6 +13,7 @@ const {
   width: SCREEN_WIDTH,
   height: SCREEN_HEIGHT,
 } = Dimensions.get('window');
+const LOGGED_USER_KEY = 'loggedUser';
 
 function LoginPage ({ navigation }) {
   const [open, setOpen] = useState(false);
@@ -28,6 +31,27 @@ function LoginPage ({ navigation }) {
     {label: 'f1e368ad-76bb-403e-b2c4-32f73f300508', value: 'f1e368ad-76bb-403e-b2c4-32f73f300508'},
   ]);
   const [invalidId, setInvalidId] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [loggedUser, setLoggedUser] = useState(null);
+
+  useEffect(() => {
+    axios.get('http://localhost:4000/api/v1/getUser')
+    .then(res => setUsers(Object.values(JSON.parse(JSON.stringify(res.data)))))
+    .catch(err => { 
+      console.log(err)
+      console.log("aaaa");
+    });
+  }, []);
+
+  // when logged user is changed, save it in async storage
+  // ang go to home screen
+  useEffect(() => {
+    console.log("Logged user: " + loggedUser);
+    if (loggedUser !== null && loggedUser !== undefined) {
+      AsyncStorage.setItem(LOGGED_USER_KEY, loggedUser);
+      navigation.navigate('Home', {id: loggedUser});
+    }
+  }, [loggedUser]);
 
   const handleLogin = () => {
     console.log(value);
@@ -42,7 +66,22 @@ function LoginPage ({ navigation }) {
   }
 
   const handleRegister = () => {
-    
+    //console.log(users);
+    // get json first element
+    //console.log(users[1][0].idUser);
+
+    //post create user, and than update users
+    axios.post('http://localhost:4000/api/v1/createUser')
+    .then(res => {
+      if (res.data.user.idUser === undefined) {
+        console.log("Error creating user");
+        console.log(res.data);
+        return;
+      }
+
+      setLoggedUser(res.data.user.idUser);
+    })
+    .catch(err => {throw err});
   }
 
   return (
