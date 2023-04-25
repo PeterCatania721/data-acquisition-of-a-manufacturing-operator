@@ -30,25 +30,38 @@ function LoginPage ({ navigation }) {
       AsyncStorage.removeItem(LOGGED_USER_KEY);
       setLoggedUser(null);
       setValue(null);
-    });
 
+      axios.get('http://localhost:4000/api/v1/getUser')
+      .then(res => {
+        setUsers(res.data.users);
+      })
+      .catch(err => {
+        console.log(err);
+        console.log(users);
+      });
+    });
     return logout;
   }, [navigation]);
 
   // on mount, get users from db
   useEffect(() => {
-    axios.get('http://localhost:4000/api/v1/getUser')
-    .then(res => setUsers(res.data.users))
-    .catch(err => console.log(err));
-
     // get logged user from async storage
     AsyncStorage.getItem(LOGGED_USER_KEY)
     .then(res => {
       if (res !== null) {
         setLoggedUser(res);
-
       }
     })
+
+    axios.get('http://localhost:4000/api/v1/getUser')
+      .then(res => {
+        setUsers(res.data.users);
+      })
+      .catch(err => {
+        console.log(err);
+        console.log(users);
+      });
+
   }, []);
 
   // when users are updated, update items in dropdown
@@ -72,7 +85,6 @@ function LoginPage ({ navigation }) {
   }, [loggedUser]);
 
   const handleLogin = () => {
-    console.log(value);
     if (value === null) {
       setInvalidId(true);
       return;
