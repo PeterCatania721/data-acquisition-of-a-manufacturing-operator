@@ -63,7 +63,7 @@ function HomeNavigation() {
                     options={{
                         headerTitle: props => (
                           <HeaderTitle style={styles.headerTitle}>
-                            Attivita Corrente
+                            Attivita
                           </HeaderTitle>
                         ),
                     }}

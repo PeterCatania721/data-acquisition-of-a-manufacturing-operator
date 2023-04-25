@@ -41,6 +41,13 @@ function HomeScreen({ navigation, route}) {
                 >
                     <Text style={styles.buttonText}>Attivita Terminata?</Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={[styles.button, {backgroundColor: '#6D1111'}]}
+                    onPress={() => handleTaskCompleted()}
+                >
+                    <Text style={styles.buttonText}>Inizia Nuova </Text>
+                </TouchableOpacity>
             </View>
         </View>
     );

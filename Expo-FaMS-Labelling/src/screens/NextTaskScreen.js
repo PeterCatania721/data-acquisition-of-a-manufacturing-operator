@@ -21,6 +21,7 @@ function NextTaskListItem({ item, index, onTaskPress}){
           onPress={onTaskPress}  
           style={[buttonStyle, index === 0 && {height: elementHeight}]}>
 
+          {index === 0 && <Text style={[buttonTextStyle, styles.firstButtonLabel]}>Attività Corrente</Text>}
           <Text style={buttonTextStyle}>{item.title}</Text>
 
         </TouchableOpacity>
@@ -127,6 +128,15 @@ const styles = StyleSheet.create({
       color: '#000',
       fontWeight: '800',
       textAlign: 'center',
+      marginTop: '-25%',
+  },
+  firstButtonLabel: {
+    fontSize: 20,
+    color: 'rgba(0,0,0,0.8)',
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: '50%',
+    textDecorationLine: 'underline',
   },
   buttonText: {
       fontSize: 20,
