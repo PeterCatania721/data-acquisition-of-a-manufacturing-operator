@@ -13,10 +13,11 @@ const {
     height: SCREEN_HEIGHT,
 } = Dimensions.get('window');
 const viewWidth = '95%';
+const defaultTaskValue = 'Nessuna';
 
 function HomeScreen({ navigation, route}) {
     const { userId } = route.params;
-    const [currentTask, setCurrentTask] = useState('Nessuna');
+    const [currentTask, setCurrentTask] = useState(defaultTaskValue);
     const [terminateCurrentTaskModalVisible, setTerminateCurrentTaskModalVisible] = useState(false);
 
     useEffect(() => {
@@ -35,7 +36,11 @@ function HomeScreen({ navigation, route}) {
     }, [navigation]);
 
     const handleTaskCompleted = () => {
-        setTerminateCurrentTaskModalVisible(true);
+        if (currentTask == defaultTaskValue) {
+            
+        } else {
+            setTerminateCurrentTaskModalVisible(true);
+        }
     }
 
     function handleTerminateCurrentTaskConfirm(){
@@ -56,7 +61,7 @@ function HomeScreen({ navigation, route}) {
     return (
         <View style={styles.container}>
             <ConfirmationModal 
-            title="Vuoi Terminare:"
+            title={"Vuoi Terminare:" }
             visible={terminateCurrentTaskModalVisible} 
             onConfirm={handleTerminateCurrentTaskConfirm} 
             onCancel={handleTerminateCurrentTaskCancel}
@@ -84,14 +89,7 @@ function HomeScreen({ navigation, route}) {
                     style={[styles.button, {backgroundColor: '#6D986B'}]}
                     onPress={() => handleTaskCompleted()}
                 >
-                    <Text style={styles.buttonText}>Termina Task</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={[styles.button, {backgroundColor: '#6D1111'}]}
-                    onPress={() => handleTaskCompleted()}
-                >
-                    <Text style={styles.buttonText}>Inizia Nuova </Text>
+                    <Text style={styles.buttonText}>{currentTask == defaultTaskValue ? "Inizia Task" : "Termina Task"  }</Text>
                 </TouchableOpacity>
             </View>
         </View>
