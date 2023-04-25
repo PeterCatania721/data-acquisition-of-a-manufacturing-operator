@@ -20,21 +20,32 @@ function HomeScreen({ navigation, route}) {
     const [terminateCurrentTaskModalVisible, setTerminateCurrentTaskModalVisible] = useState(false);
 
     useEffect(() => {
-        axios.get(`http://localhost:4000/api/v1/${userId}/getTaskInProgress`)
-        .then(res => {
-            let tasks = res.data.tasks;
-            if (tasks !== null && tasks !== undefined && tasks.length > 0) {
-                setCurrentTask(tasks[0].nameTask);
-            }
-        })
-        .catch(err => console.log(err));
-    }, []);
+        const back = navigation.addListener('focus', () => {
+            axios.get(`http://localhost:4000/api/v1/${userId}/getTaskInProgress`)
+            .then(res => {
+                let tasks = res.data.tasks;
+                if (tasks !== null && tasks !== undefined && tasks.length > 0) {
+                    setCurrentTask(tasks[0].nameTask);
+                }
+            })
+            .catch(err => console.log(err));
+        });
+    
+        return back;
+    }, [navigation]);
 
     const handleTaskCompleted = () => {
         setTerminateCurrentTaskModalVisible(true);
     }
 
     function handleTerminateCurrentTaskConfirm(){
+        axios.post(`http://localhost:4000/api/v1/${userId}/closeTask`)
+        .then(res => {
+            console.log(res);
+            setCurrentTask('Nessuna');
+        })
+        .catch(err => console.log(err));
+
         setTerminateCurrentTaskModalVisible(false);
     }
 
