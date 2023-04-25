@@ -1,5 +1,5 @@
 import express from "express";
-import { create,getAll,fatigue,startTask, finishTask, getAllTask,addingDefaultTasks,getTask,getTaskByGroup} from "../controllers/User.js";
+import { create,getAll,fatigue,startTask, finishTask, getAllTask,addingDefaultTasks,getTask,getTaskByGroup, getTaskInProgress} from "../controllers/User.js";
 
 const router = express.Router();
 
@@ -21,17 +21,6 @@ router.route("/getTask").get(getTask);
 
 router.route("/:group/getTaskByGroup").get(getTaskByGroup);
 
-
-
-
-
-
-
-
-
-
-
-//router.route("/register").post(register);
-//router.route("/logout").get(getUser);
+router.route("/:id/getTaskInProgress").get(getTaskInProgress);
 
 export default router;

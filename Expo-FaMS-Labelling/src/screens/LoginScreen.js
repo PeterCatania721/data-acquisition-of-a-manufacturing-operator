@@ -26,13 +26,10 @@ function LoginPage ({ navigation }) {
   // when the screen is focused again, execute logout
   useEffect(() => {
     const logout = navigation.addListener('focus', () => {
-      // Screen was focused
-      // Do something
+      // Screen was agin  focused do something
       AsyncStorage.removeItem(LOGGED_USER_KEY);
       setLoggedUser(null);
       setValue(null);
-
-      console.log("back pressed2");
     });
 
     return logout;
@@ -70,7 +67,7 @@ function LoginPage ({ navigation }) {
   useEffect(() => {
     if (loggedUser !== null && loggedUser !== undefined) {
       AsyncStorage.setItem(LOGGED_USER_KEY, loggedUser);
-      navigation.navigate('Home', {id: loggedUser});
+      navigation.navigate('Home', {userId: loggedUser});
     }
   }, [loggedUser]);
 

@@ -1,9 +1,11 @@
 // External imports
-import React from 'react';
+import {React, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity,  Dimensions} from 'react-native';
+import axios from 'axios';
 
 // Intrenal imports
 import {normalize} from '../utils/resizingUtils';
+import ConfirmationModal from '../components/modals/ConfirmationModal';
 
 // Global variables
 const {
@@ -13,24 +15,56 @@ const {
 const viewWidth = '95%';
 
 function HomeScreen({ navigation, route}) {
-    const { id } = route.params;
+    const { userId } = route.params;
+    const [currentTask, setCurrentTask] = useState('Nessuna');
+    const [terminateCurrentTaskModalVisible, setTerminateCurrentTaskModalVisible] = useState(false);
+
+    useEffect(() => {
+        axios.get(`http://localhost:4000/api/v1/${userId}/getTaskInProgress`)
+        .then(res => {
+            let tasks = res.data.tasks;
+            if (tasks !== null && tasks !== undefined && tasks.length > 0) {
+                setCurrentTask(tasks[0].nameTask);
+            }
+        })
+        .catch(err => console.log(err));
+    }, []);
 
     const handleTaskCompleted = () => {
-        navigation.navigate('Home');
+        setTerminateCurrentTaskModalVisible(true);
+    }
+
+    function handleTerminateCurrentTaskConfirm(){
+        setTerminateCurrentTaskModalVisible(false);
+    }
+
+    function handleTerminateCurrentTaskCancel(){
+        setTerminateCurrentTaskModalVisible(false);
     }
 
     return (
         <View style={styles.container}>
+            <ConfirmationModal 
+            title="Vuoi Terminare:"
+            visible={terminateCurrentTaskModalVisible} 
+            onConfirm={handleTerminateCurrentTaskConfirm} 
+            onCancel={handleTerminateCurrentTaskCancel}
+            >
+                <Text style={styles.descriptionText}>
+                {currentTask + " ?"}
+                </Text>
+            </ConfirmationModal>
+
             <View style={styles.topContainer}>
-                <Text style={styles.topTextLabel}>Il tuo Id: <Text style={styles.boldText}>{id}</Text></Text> 
+                <Text style={styles.topTextLabel}>Il tuo Id: <Text style={styles.boldText}>{userId}</Text></Text> 
             </View>
             <View style={styles.topContainer}>
-                <Text style={styles.topTextLabel}>Attività in Esecuzione: <Text style={styles.boldText}>Pulire Filtro Aria</Text></Text> 
+                <Text style={styles.topTextLabel}>Attività in Esecuzione: <Text style={styles.boldText}>{currentTask}</Text></Text> 
             </View>
             <View style={styles.buttonCountainer}>
                 <TouchableOpacity
                     style={[styles.button, {backgroundColor: '#FF7F00'}]}
-                    onPress={() => navigation.navigate('Fatica')}
+                    onPress={() => navigation.navigate('Fatica', {userId: userId})}
                 >
                     <Text style={styles.buttonText}>Quanto sei stanco?</Text>
                 </TouchableOpacity>
@@ -39,7 +73,7 @@ function HomeScreen({ navigation, route}) {
                     style={[styles.button, {backgroundColor: '#6D986B'}]}
                     onPress={() => handleTaskCompleted()}
                 >
-                    <Text style={styles.buttonText}>Attivita Terminata?</Text>
+                    <Text style={styles.buttonText}>Termina Task</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -97,6 +131,14 @@ const styles = StyleSheet.create({
         fontSize: normalize(12, SCREEN_WIDTH),
         fontWeight: 'bold',
         textAlign: 'center',
+    },
+    descriptionText: {
+        fontSize: 30,
+        marginTop: 10,
+        marginBottom: 20,
+        padding: 10,
+        borderRadius: 10,
+        backgroundColor: '#f2f2f2',
     },
 })
 

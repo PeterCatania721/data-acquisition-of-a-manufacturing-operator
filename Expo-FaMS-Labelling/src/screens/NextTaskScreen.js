@@ -2,8 +2,8 @@
 import React, {useState} from 'react';
 import { Text, TextInput, View, FlatList, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { BlurView } from 'expo-blur';
-import Collapsible from 'react-native-collapsible';
 import Accordion from 'react-native-collapsible/Accordion';
+import axios from 'axios';
 
 // Internal imports
 import ConfirmationModal from '../components/modals/ConfirmationModal';
@@ -83,7 +83,9 @@ function NextTaskListItem({ item, index, onTaskPress}){
     );
 };
 
-function NextTaskScreen() {
+function NextTaskScreen({ navigation, route}) {
+  const {userId, fatigue, optionalComment} = route.params;
+
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
   const [clickedItemId, setClickedItemId] = useState(1);
   const [activeSections, setActiveSections] = useState([]);
@@ -106,6 +108,49 @@ function NextTaskScreen() {
   }
 
   function handleModalConfirm(){
+    console.log('fatigue: ', fatigue);
+    console.log('optionalComment: ', optionalComment);
+
+    if(submitUnexpectedActivity){
+      consolo.log('submit unexpected activity');
+      console.log('unexpected activity: ', newUnexpectedActivity);
+    } else {
+      let clickedItemName = (data.find(item => item.id === clickedItemId)).title;
+      console.log('submit expected activity');
+      console.log('id clicked item: ',clickedItemId);
+      console.log('clicked item: ',clickedItemName);
+
+      // pass the name of the task and optinalMessage to the server, in JSON format
+      // to the url http://localhost:4000/api/v1/${id}/addTask with a POST request using axios
+      // where id is the id of the user
+      axios.post(`http://localhost:4000/api/v1/${userId}/addTask`, {
+        nameTask: clickedItemName,
+        comment: optionalComment,
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+      // pass the fatigue value and optinalMessage to the server, in JSON format
+      // to the url http://localhost:4000/api/v1/${id}/addFatigue with a POST request using axios
+      // where id is the id of the user
+      axios.post(`http://localhost:4000/api/v1/${userId}/addFatigue`, {
+        fatigue: fatigue,
+        comment: optionalComment,
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+      navigation.navigate('Home', {userId: userId});
+    }
+
     setConfirmationModalVisible(false);
     setSubmitUnexpectedActivity(false);
   }
@@ -116,8 +161,6 @@ function NextTaskScreen() {
   }
 
   function handleCreateUnexpectedActivity(){
-    
-
     setSubmitUnexpectedActivity(true);
     setConfirmationModalVisible(true);
   }

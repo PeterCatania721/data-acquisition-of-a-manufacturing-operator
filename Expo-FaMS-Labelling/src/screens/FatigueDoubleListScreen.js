@@ -33,7 +33,8 @@ function FatigueListItem({ item, onFatiguePress}){
   );
 }
 
-function FatigueDoubleListScreen({ navigation }) {
+function FatigueDoubleListScreen({ navigation, route}) {
+  const {userId} = route.params;
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
   const [clickedFatigueKey, setClickedFatigueKey] = useState(0);
   const [optionaText, setOptionalText] = React.useState('');
@@ -46,7 +47,7 @@ function FatigueDoubleListScreen({ navigation }) {
   function handleModalConfirm(){
     setConfirmationModalVisible(false);
     //go to the screen with task list
-    navigation.navigate('NextTaskScreen');
+    navigation.navigate('NextTaskScreen', {userId: userId ,fatigue: clickedFatigueKey, optionalComment: optionaText});
   }
 
   function handleModalCancel(){
