@@ -108,13 +108,7 @@ function NextTaskScreen({ navigation, route}) {
   }
 
   function handleModalConfirm(){
-    console.log('fatigue: ', fatigue);
-    console.log('optionalComment: ', optionalComment);
-
     if(submitUnexpectedActivity){
-      console.log('submit unexpected activity');
-      console.log('unexpected activity: ', newUnexpectedActivity);
-
       // pass the name of the task and optinalMessage to the server, in JSON format
       // to the url http://localhost:4000/api/v1/${id}/addTask with a POST request using axios
       // where id is the id of the user
@@ -145,9 +139,6 @@ function NextTaskScreen({ navigation, route}) {
 
     } else {
       let clickedItemName = (data.find(item => item.id === clickedItemId)).title;
-      console.log('submit expected activity');
-      console.log('id clicked item: ',clickedItemId);
-      console.log('clicked item: ',clickedItemName);
 
       // pass the name of the task and optinalMessage to the server, in JSON format
       // to the url http://localhost:4000/api/v1/${id}/addTask with a POST request using axios
@@ -156,12 +147,8 @@ function NextTaskScreen({ navigation, route}) {
         nameTask: clickedItemName,
         comment: optionalComment,
       })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .then((response) => {})
+      .catch((error) => {console.log(error);});
 
       // pass the fatigue value and optinalMessage to the server, in JSON format
       // to the url http://localhost:4000/api/v1/${id}/addFatigue with a POST request using axios
@@ -170,12 +157,8 @@ function NextTaskScreen({ navigation, route}) {
         fatigue: fatigue,
         comment: optionalComment,
       })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .then((response) => {console.log(response);})
+      .catch((error) => {console.log(error);});
     }
 
     navigation.navigate('Home', {userId: userId});

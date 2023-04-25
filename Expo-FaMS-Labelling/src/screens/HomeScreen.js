@@ -6,6 +6,7 @@ import axios from 'axios';
 // Intrenal imports
 import {normalize} from '../utils/resizingUtils';
 import ConfirmationModal from '../components/modals/ConfirmationModal';
+import {getTasksInProgress, closeTask} from '../utils/requestManager';
 
 // Global variables
 const {
@@ -22,10 +23,9 @@ function HomeScreen({ navigation, route}) {
 
     useEffect(() => {
         const back = navigation.addListener('focus', () => {
-            axios.get(`http://localhost:4000/api/v1/${userId}/getTaskInProgress`)
-            .then(res => {
-                let tasks = res.data.tasks;
-                if (tasks !== null && tasks !== undefined && tasks.length > 0) {
+            getTasksInProgress(userId)
+            .then(tasks => {
+                if (tasks.length > 0) {
                     setCurrentTask(tasks[0].nameTask);
                 }
             })
@@ -44,9 +44,8 @@ function HomeScreen({ navigation, route}) {
     }
 
     function handleTerminateCurrentTaskConfirm(){
-        axios.post(`http://localhost:4000/api/v1/${userId}/closeTask`)
+        closeTask(userId)
         .then(res => {
-            console.log(res);
             setCurrentTask('Nessuna');
         })
         .catch(err => console.log(err));

@@ -3,10 +3,10 @@ import React, { useState, useEffect, useRef} from 'react';
 import { View, Dimensions, TouchableOpacity, Text, StyleSheet, Animated} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 
 // Intrenal imports
 import {normalize} from '../utils/resizingUtils';
+import {fetchUsers, createUser} from '../utils/requestManager';
 
 // Global variables
 const {
@@ -20,7 +20,6 @@ function LoginPage ({ navigation }) {
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([]);
   const [invalidId, setInvalidId] = useState(false);
-  const [users, setUsers] = useState([]);
   const [loggedUser, setLoggedUser] = useState(null);
   
   // when the screen is focused again, execute logout
@@ -31,14 +30,11 @@ function LoginPage ({ navigation }) {
       setLoggedUser(null);
       setValue(null);
 
-      axios.get('http://localhost:4000/api/v1/getUser')
-      .then(res => {
-        setUsers(res.data.users);
-      })
-      .catch(err => {
-        console.log(err);
-        console.log(users);
-      });
+      fetchUsers()
+        .then(users => {
+          setItems(users);
+        })
+        .catch(err => {throw err});
     });
     return logout;
   }, [navigation]);
@@ -53,27 +49,13 @@ function LoginPage ({ navigation }) {
       }
     })
 
-    axios.get('http://localhost:4000/api/v1/getUser')
-      .then(res => {
-        setUsers(res.data.users);
+    fetchUsers()
+      .then(users => {
+        setItems(users);
       })
-      .catch(err => {
-        console.log(err);
-        console.log(users);
-      });
+      .catch(err => {throw err});
 
   }, []);
-
-  // when users are updated, update items in dropdown
-  useEffect(() => {
-    if (users.length > 0) {
-      let newItems = [];
-      users.forEach(user => {
-        newItems.push({label: user.idUser, value: user.idUser});
-      });
-      setItems(newItems);
-    }
-  }, [users]);
 
   // when logged user is changed, save it in async storage
   // ang go to home screen
@@ -99,11 +81,11 @@ function LoginPage ({ navigation }) {
 
   const handleRegister = () => {
     //post create user, and than update users
-    axios.post('http://localhost:4000/api/v1/createUser')
-    .then(res => {
-      setLoggedUser(res.data.user.idUser);
-    })
-    .catch(err => {throw err});
+    createUser()
+      .then(userId => {
+        setLoggedUser(userId);
+      })
+      .catch(err => {throw err});
   }
 
   return (
