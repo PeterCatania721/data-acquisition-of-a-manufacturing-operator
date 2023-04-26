@@ -1,5 +1,5 @@
 import express from "express";
-import { create,getAll,fatigue,startTask, finishTask, getAllTask,addingDefaultTasks,getTask,getTaskByGroup, getTaskInProgress, createUserById} from "../controllers/User.js";
+import { create,getAll,fatigue,startTask, finishTask, getAllTask,addGroupTask,getGroupTasks,getTaskByGroup, getTaskInProgress} from "../controllers/User.js";
 
 const router = express.Router();
 
@@ -15,9 +15,9 @@ router.route("/:id/closeTask").post(finishTask);
 
 router.route("/:id/getTask").get(getAllTask);
 
-router.route("/task").post(addingDefaultTasks);
+router.route("/addGroupTask").post(addGroupTask);
 
-router.route("/getTask").get(getTask);
+router.route("/getGroupTasks").get(getGroupTasks);
 
 router.route("/:group/getTaskByGroup").get(getTaskByGroup);
 

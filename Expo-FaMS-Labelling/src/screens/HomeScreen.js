@@ -91,7 +91,9 @@ function HomeScreen({ navigation, route}) {
 
                 <TouchableOpacity
                     style={[styles.button, {backgroundColor: '#6D986B'}]}
-                    onPress={() => handleTaskCompleted()}
+                    onPress={currentTask == defaultTaskValue ? 
+                        () => navigation.navigate('StartTaskScreen', {userId: userId, currentTask: currentTask}) : 
+                        () => handleTaskCompleted()}
                 >
                     <Text style={styles.buttonText}>{currentTask == defaultTaskValue ? "Inizia Task" : "Termina Task"  }</Text>
                 </TouchableOpacity>

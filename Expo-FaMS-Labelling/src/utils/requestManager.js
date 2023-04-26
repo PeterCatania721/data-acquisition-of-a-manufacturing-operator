@@ -184,3 +184,29 @@ export const addSurvey = async (userId, fatigue, taskName, comment) => {
         console.log(err);
     }
 }
+
+
+export const getTaskByGroup = async (group) => {
+    try {
+        let response = await axios.get(`${API_BASE_URL}${group}/getTaskByGroup`);
+    
+        if (response.status !== 200) {
+            throw new Error("Failed to fetch users");
+        }
+
+        let tasks = await response.data.tasks;
+
+        if (tasks !== null && tasks !== undefined && tasks.length > 0) {
+            return tasks;
+        }
+
+        return [];
+    } catch (err) {
+        if(axios.isCancel(err)){
+            console.log('Data fetching cancelled');
+        }else{
+            console.log("Error while fetching task by group");
+            console.log(err);
+        }
+    }
+}

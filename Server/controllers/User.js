@@ -69,23 +69,25 @@ export const getTaskByGroup = async (req, res) => {
   const group = req.params.group;
 
   try {
-    const tasks = await TaskModel.find({group : group});
+    const tasks = await TaskModel.find({group: group});
+
     res.status(200).json({ tasks });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 }
 
-export const getTask = async (req, res) => {
+export const getGroupTasks = async (req, res) => {
   try {
     const tasks = await TaskModel.find();
+
     res.status(200).json({ tasks });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 }
 
-export const addingDefaultTasks = async (req, res) => {
+export const addGroupTask = async (req, res) => {
 
   const {nameTask,group} = req.body;
 

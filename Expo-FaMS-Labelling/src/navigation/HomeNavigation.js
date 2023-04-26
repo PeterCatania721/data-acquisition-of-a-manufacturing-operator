@@ -6,7 +6,7 @@ import React from 'react';
 import {StyleSheet, Dimensions} from 'react-native';
 
 // Internal imports
-import { LoginScreen, HomeScreen, NextTaskScreen, FatigueDoubleListScreen } from '../screens/index';
+import { LoginScreen, HomeScreen, NextTaskScreen, FatigueDoubleListScreen, StartTaskScreen } from '../screens/index';
 import {normalize} from '../utils/resizingUtils';
 
 // Global variables
@@ -63,7 +63,19 @@ function HomeNavigation() {
                     options={{
                         headerTitle: props => (
                           <HeaderTitle style={styles.headerTitle}>
-                            Attivita
+                            Attività
+                          </HeaderTitle>
+                        ),
+                    }}
+                />
+
+                <Stack.Screen 
+                    name="StartTaskScreen" 
+                    component={StartTaskScreen} 
+                    options={{
+                        headerTitle: props => (
+                          <HeaderTitle style={styles.headerTitle}>
+                            Inizia Attività
                           </HeaderTitle>
                         ),
                     }}
