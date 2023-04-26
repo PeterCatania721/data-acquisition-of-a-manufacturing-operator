@@ -18,6 +18,7 @@ const defaultTaskValue = 'Nessuna';
 
 function HomeScreen({ navigation, route}) {
     const { userId } = route.params;
+
     const [currentTask, setCurrentTask] = useState(defaultTaskValue);
     const [terminateCurrentTaskModalVisible, setTerminateCurrentTaskModalVisible] = useState(false);
 
@@ -29,7 +30,9 @@ function HomeScreen({ navigation, route}) {
                         setCurrentTask(tasks[0].nameTask);
                     }
                 })
-            .catch(err => console.log(err));
+            .catch(err =>{ 
+                console.log("Error during get current task in progress: ",err); 
+            });
         });
     
         return back;
@@ -48,7 +51,9 @@ function HomeScreen({ navigation, route}) {
         .then(res => {
             setCurrentTask('Nessuna');
         })
-        .catch(err => console.log(err));
+        .catch(err => { 
+            console.log("Error during terminaing task: ",err); 
+        });
 
         setTerminateCurrentTaskModalVisible(false);
     }

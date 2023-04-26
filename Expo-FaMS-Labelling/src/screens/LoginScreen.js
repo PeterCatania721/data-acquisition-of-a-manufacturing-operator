@@ -59,7 +59,7 @@ function LoginPage ({ navigation }) {
 
   // when logged user is changed, save it in async storage
   // ang go to home screen
-  useEffect(() => {
+  useEffect( () => {
     if (loggedUser !== null && loggedUser !== undefined) {
       AsyncStorage.setItem(LOGGED_USER_KEY, loggedUser);
       navigation.navigate('Home', {userId: loggedUser});
@@ -76,7 +76,7 @@ function LoginPage ({ navigation }) {
     // update logged user
     setLoggedUser(value);
 
-    navigation.navigate('Home', {id: value});
+    navigation.navigate('Home', {userId: value});
   }
 
   const handleRegister = () => {
