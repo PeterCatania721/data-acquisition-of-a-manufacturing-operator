@@ -24,11 +24,11 @@ function HomeScreen({ navigation, route}) {
     useEffect(() => {
         const back = navigation.addListener('focus', () => {
             getTasksInProgress(userId)
-            .then(tasks => {
-                if (tasks.length > 0) {
-                    setCurrentTask(tasks[0].nameTask);
-                }
-            })
+                .then(tasks => {
+                    if (tasks.length > 0) {
+                        setCurrentTask(tasks[0].nameTask);
+                    }
+                })
             .catch(err => console.log(err));
         });
     

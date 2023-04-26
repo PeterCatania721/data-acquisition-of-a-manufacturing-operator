@@ -185,7 +185,6 @@ export const finishTask = async (req, res) => {
 
 }
 
-
 //get all task by user
 export const getAllTask = async (req, res) => {
 
@@ -205,7 +204,6 @@ export const getAllTask = async (req, res) => {
   res.status(200).json({ success: true, tasks });
 
 }
-
 
 export const getTaskInProgress = async (req, res) => {
   const id = req.params.id;

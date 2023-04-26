@@ -3,10 +3,10 @@ import React, {useState} from 'react';
 import { Text, TextInput, View, FlatList, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { BlurView } from 'expo-blur';
 import Accordion from 'react-native-collapsible/Accordion';
-import axios from 'axios';
 
 // Internal imports
 import ConfirmationModal from '../components/modals/ConfirmationModal';
+import { addSurvey } from '../utils/requestManager';
 
 
 const styles = StyleSheet.create({
@@ -59,8 +59,6 @@ const styles = StyleSheet.create({
 });
 
 function NextTaskListItem({ item, index, onTaskPress}){
-
-
     const buttonStyle = index === 0 ? styles.firstButton : styles.button;
     const buttonTextStyle = index === 0 ? styles.firstButtonText : styles.buttonText;
 
@@ -108,63 +106,21 @@ function NextTaskScreen({ navigation, route}) {
   }
 
   function handleModalConfirm(){
+    let taskName;
     if(submitUnexpectedActivity){
-      // pass the name of the task and optinalMessage to the server, in JSON format
-      // to the url http://localhost:4000/api/v1/${id}/addTask with a POST request using axios
-      // where id is the id of the user
-      axios.post(`http://localhost:4000/api/v1/${userId}/addTask`, {
-        nameTask: newUnexpectedActivity,
-        comment: optionalComment,
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-      // pass the fatigue value and optinalMessage to the server, in JSON format
-      // to the url http://localhost:4000/api/v1/${id}/addFatigue with a POST request using axios
-      // where id is the id of the user
-      axios.post(`http://localhost:4000/api/v1/${userId}/addFatigue`, {
-        fatigue: fatigue,
-        comment: optionalComment,
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
+      taskName = newUnexpectedActivity;
     } else {
-      let clickedItemName = (data.find(item => item.id === clickedItemId)).title;
-
-      // pass the name of the task and optinalMessage to the server, in JSON format
-      // to the url http://localhost:4000/api/v1/${id}/addTask with a POST request using axios
-      // where id is the id of the user
-      axios.post(`http://localhost:4000/api/v1/${userId}/addTask`, {
-        nameTask: clickedItemName,
-        comment: optionalComment,
-      })
-      .then((response) => {})
-      .catch((error) => {console.log(error);});
-
-      // pass the fatigue value and optinalMessage to the server, in JSON format
-      // to the url http://localhost:4000/api/v1/${id}/addFatigue with a POST request using axios
-      // where id is the id of the user
-      axios.post(`http://localhost:4000/api/v1/${userId}/addFatigue`, {
-        fatigue: fatigue,
-        comment: optionalComment,
-      })
-      .then((response) => {console.log(response);})
-      .catch((error) => {console.log(error);});
+      taskName = (data.find(item => item.id === clickedItemId)).title;
     }
-
-    navigation.navigate('Home', {userId: userId});
 
     setConfirmationModalVisible(false);
     setSubmitUnexpectedActivity(false);
+
+    // wait for addSuvrey to finish, before navigating to Home
+    addSurvey(userId, fatigue, taskName, optionalComment)
+      .then(() => {
+        navigation.navigate('Home', {userId: userId})
+      });
   }
 
   function handleModalCancel(){
