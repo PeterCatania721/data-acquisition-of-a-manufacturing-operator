@@ -14,6 +14,7 @@ const {
   height: SCREEN_HEIGHT,
 } = Dimensions.get('window');
 const LOGGED_USER_KEY = 'loggedUser';
+const uuidRegex = new RegExp('^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$');
 
 function LoginPage ({ navigation }) {
   const [open, setOpen] = useState(false);
@@ -21,6 +22,7 @@ function LoginPage ({ navigation }) {
   const [items, setItems] = useState([]);
   const [invalidId, setInvalidId] = useState(false);
   const [loggedUser, setLoggedUser] = useState(null);
+  const [errorInvalidID, setErrorInvalidID] = useState(null);
   
   // when the screen is focused again, execute logout
   useEffect(() => {
@@ -28,7 +30,6 @@ function LoginPage ({ navigation }) {
       // Screen was agin  focused do something
       AsyncStorage.removeItem(LOGGED_USER_KEY);
       setLoggedUser(null);
-      setValue(null);
 
       fetchUsers()
         .then(users => {
@@ -67,8 +68,8 @@ function LoginPage ({ navigation }) {
   }, [loggedUser]);
 
   const handleLogin = () => {
-    if (value === null) {
-      setInvalidId(true);
+    if (value === null || errorInvalidID !== null) {
+      setErrorInvalidID(errorInvalidID === null ? "Seleziona un ID!" : errorInvalidID);
       return;
     }
     setInvalidId(false);
@@ -88,13 +89,31 @@ function LoginPage ({ navigation }) {
       .catch(err => {throw err});
   }
 
+  const handleSearch = (text) => {
+    // put only the check right to the custom id if id is valid
+    setValue(uuidRegex.test(text) ? text : null);
+  }
+
+  const verifyId = (id) => {
+    const isInvalid = !uuidRegex.test(id);
+
+    if(id === null || id === undefined || id === "") {
+      setErrorInvalidID("Seleziona un ID!");
+    } else if (isInvalid) {
+      setErrorInvalidID("ID non valido!");
+    } else {
+      setErrorInvalidID(null);
+    }
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Scegli il tuo ID</Text>
 
-      {invalidId && <Text style={styles.errorMsg}>Seleziona un ID!</Text> }
+      {errorInvalidID !== null && <Text style={styles.errorMsg}>{errorInvalidID}</Text> }
 
       <DropDownPicker
+        zIndex={1000}
         style={[styles.IdDropdown, invalidId && styles.invalidId]}
         dropDownContainerStyle={[styles.IdDropdown]}
         language="IT"
@@ -102,9 +121,14 @@ function LoginPage ({ navigation }) {
         value={value}
         items={items}
         searchable={true}
+        onChangeSearchText={handleSearch}
+        onChangeValue={() => {verifyId(value)}}
+        addCustomItem={true}
         setOpen={setOpen}
         setValue={setValue}
         setItems={setItems}
+        placeholder='Iserisci il tuo ID'
+        searchPlaceholder='Il tuo ID...'
         textStyle={ { fontSize: normalize(20, SCREEN_WIDTH)} }
         mode="SIMPLE"
         listMode="SCROLLVIEW"
