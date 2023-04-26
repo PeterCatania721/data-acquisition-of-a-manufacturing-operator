@@ -30,9 +30,14 @@ export const fetchUsers = async () => {
 }
 
 //post create user, and return idUser of the new user
-export const createUser = async () => {
+export const createUser = async (id) => {
     try {
-        let response = await axios.post(`${API_BASE_URL}createUser`);
+        let response = await axios.post(
+            `${API_BASE_URL}createUser`,
+            {
+                idUser: id
+            }
+        );
     
         if (response.status !== 201 && response.status !== 200) {
             throw new Error("Failed to fetch users");

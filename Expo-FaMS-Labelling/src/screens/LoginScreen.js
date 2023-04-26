@@ -77,14 +77,18 @@ function LoginPage ({ navigation }) {
     // update logged user
     setLoggedUser(value);
 
-    navigation.navigate('Home', {userId: value});
+    createUser(value)
+      .then(id => {
+        navigation.navigate('Home', {userId: value});
+      })
+      .catch(err => {throw err});
   }
 
   const handleRegister = () => {
     //post create user, and than update users
-    createUser()
-      .then(userId => {
-        setLoggedUser(userId);
+    createUser(null)
+      .then(id => {
+        setLoggedUser(id);
       })
       .catch(err => {throw err});
   }
