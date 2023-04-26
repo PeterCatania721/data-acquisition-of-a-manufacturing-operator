@@ -137,12 +137,15 @@ function LoginPage ({ navigation }) {
         mode="SIMPLE"
         listMode="SCROLLVIEW"
 
-        labelStyle={ invalidId && styles.invalidId }
+        labelStyle={[invalidId && styles.invalidId]}
         labelContainerStyle={ invalidId && styles.invalidId }
+
 
         placeholderStyle={ invalidId && styles.invalidId }
 
-        selectedItemLabelStyle={{ fontWeight: "bold" }}
+        selectedItemLabelStyle={{ fontWeight: "bold"}}
+        listItemLabelStyle={styles.idItemLabel}
+        itemSeparator={true}
       />
 
       <View style={styles.buttonContainer}>
@@ -192,6 +195,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   buttonContainer: {
+    zIndex: -1,
     width: '100%',
     height: '20%',
     justifyContent: 'center',
@@ -223,6 +227,11 @@ const styles = StyleSheet.create({
   },
   IdDropdown: {
     width: '100%',
+  },
+  idItemLabel: {
+    fontSize: normalize(25, SCREEN_WIDTH),
+    paddingVertical: 2,
+    height: 50,
   },
   invalidId: {
     borderColor: "rgba(255, 0, 0, 0.5)",

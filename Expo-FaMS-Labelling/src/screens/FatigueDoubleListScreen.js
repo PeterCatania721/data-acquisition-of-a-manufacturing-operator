@@ -94,6 +94,7 @@ function FatigueDoubleListScreen({ navigation, route}) {
               onChangeText={setOptionalText} 
               value={optionaText} 
               placeholder="Commento Opzionale ..."
+              placeholderTextColor="#bfbfbf"
             />
 
           </ConfirmationModal>

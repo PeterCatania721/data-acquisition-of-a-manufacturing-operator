@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     },
     topContainer: {
         alignItems: 'center',
-        justifyContent: 'top',
+        //justifyContent: 'top',
         width: '100%',
     },
     topTextLabel: {
