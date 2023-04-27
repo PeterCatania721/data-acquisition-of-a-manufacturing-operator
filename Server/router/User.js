@@ -9,7 +9,7 @@ router.route("/getUser").get(getAll);
 
 router.route("/:id/addFatigue").post(fatigue);
 
-router.route("/:id/addTask").post(startTask);
+router.route("/:id/startTask").post(startTask);
 
 router.route("/:id/closeTask").post(finishTask);
 

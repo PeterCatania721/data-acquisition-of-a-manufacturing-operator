@@ -6,7 +6,7 @@ import Accordion from 'react-native-collapsible/Accordion';
 
 // Internal imports
 import ConfirmationModal from '../components/modals/ConfirmationModal';
-import { getTaskByGroup } from '../utils/requestManager';
+import { getTaskByGroup, startTask } from '../utils/requestManager';
 
 
 const styles = StyleSheet.create({
@@ -108,6 +108,11 @@ function StartTaskScreen({ navigation, route}) {
   function handleModalConfirm(){
     setConfirmationModalVisible(false);
     setSubmitUnexpectedActivity(false);
+    startTask(userId, tasks.find((task) => task._id === clickedItemId).nameTask)
+      .then((response) => {
+        navigation.navigate('Home', {userId: userId});
+      })
+      .catch((error) => console.log(error));
   }
 
   function handleModalCancel(){

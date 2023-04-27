@@ -105,10 +105,10 @@ export const closeTask = async (userId) => {
 }
 
 // add and star a new task
-export const addTask = async (userId,taskName) => {
+export const startTask = async (userId,taskName) => {
     try {
         let response = await axios.post(
-            `${API_BASE_URL}${userId}/addTask`,
+            `${API_BASE_URL}${userId}/startTask`,
             {
                 nameTask: taskName,
             }
@@ -177,7 +177,7 @@ export const addSurvey = async (userId, fatigue, taskName, comment) => {
                 .catch((error) => {console.log(error);});
         }
 
-        const addTaskResult = await addTask(userId, taskName);
+        const addTaskResult = await startTask(userId, taskName);
         const addFatigueResult = await addFatigue(userId, fatigue, comment);
     } catch (err) {
         console.log("Error while adding survey");
