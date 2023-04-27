@@ -163,14 +163,12 @@ export const startTask = async (req, res) => {
 
   console.log(userExist);
 
-
-
   if(!userExist){
     res.status(400).json({ success: false, message: "User not exist" });
     return;
   }
 
-    const { nameTask,comment } = req.body;
+  const { nameTask,comment } = req.body;
 
   let task  = await Task.create({
     idUser: id,
