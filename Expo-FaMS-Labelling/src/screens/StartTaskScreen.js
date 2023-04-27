@@ -127,8 +127,7 @@ function StartTaskScreen({ navigation, route}) {
 
   const SECTIONS = [
     {
-      title: 'Attività Inaspettata',
-      content: 'Lorem ipsum...',
+      title: 'Nuova Attività',
     },
   ];
 
@@ -138,7 +137,7 @@ function StartTaskScreen({ navigation, route}) {
         <View style={styles.formContainer}>
           <TextInput
             style={styles.unuxpectedActivityInput}
-            placeholder="Arresto ..."
+            placeholder="Fare ..."
             multiline={true}
             numberOfLines={4}
             onChangeText={(text) => setNewUnexpectedActivity(text)}
