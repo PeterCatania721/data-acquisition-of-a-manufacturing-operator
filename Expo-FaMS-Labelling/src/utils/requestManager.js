@@ -1,5 +1,10 @@
+// External imports
 import axios from 'axios';
+
+// Internal imports
 import Constants from './constants';
+
+// Global variables
 const {API_BASE_URL} = Constants;
 
 //get users from db

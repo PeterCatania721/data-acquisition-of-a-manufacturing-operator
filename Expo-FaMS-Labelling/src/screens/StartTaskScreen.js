@@ -1,12 +1,12 @@
 // External imports
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { Text, TextInput, View, FlatList, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { BlurView } from 'expo-blur';
-import Accordion from 'react-native-collapsible/Accordion';
 
 // Internal imports
 import ConfirmationModal from '../components/modals/ConfirmationModal';
 import { getTaskByGroup, startTask } from '../utils/requestManager';
+import { UserContext } from '../contexts.js';
 
 
 const styles = StyleSheet.create({
@@ -81,8 +81,8 @@ function NextTaskListItem({ item, index, onTaskPress}){
     );
 };
 
-function StartTaskScreen({ navigation, route}) {
-  const {userId} = route.params;
+function StartTaskScreen({ navigation}) {
+  const {userId} = useContext(UserContext);
 
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
   const [clickedItemId, setClickedItemId] = useState('');

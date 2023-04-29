@@ -1,5 +1,5 @@
 // External imports
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import { Text, TextInput, View, FlatList, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { BlurView } from 'expo-blur';
 import Accordion from 'react-native-collapsible/Accordion';
@@ -7,6 +7,7 @@ import Accordion from 'react-native-collapsible/Accordion';
 // Internal imports
 import ConfirmationModal from '../components/modals/ConfirmationModal';
 import { addSurvey } from '../utils/requestManager';
+import { UserContext } from '../contexts.js';
 
 
 const styles = StyleSheet.create({
@@ -82,7 +83,8 @@ function NextTaskListItem({ item, index, onTaskPress}){
 };
 
 function NextTaskScreen({ navigation, route}) {
-  const {userId, fatigue, optionalComment} = route.params;
+  const { fatigue, optionalComment} = route.params;
+  const { userId } = useContext(UserContext);
 
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
   const [clickedItemId, setClickedItemId] = useState(1);
@@ -121,7 +123,7 @@ function NextTaskScreen({ navigation, route}) {
     // wait for addSuvrey to finish, before navigating to Home
     addSurvey(userId, fatigue, taskName, optionalComment)
       .then(() => {
-        navigation.navigate('Home', {userId: userId})
+        navigation.navigate('Home')
       });
 
   }

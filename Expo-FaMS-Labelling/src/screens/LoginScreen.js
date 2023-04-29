@@ -1,5 +1,5 @@
 // External imports
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Dimensions, TouchableOpacity, Text, StyleSheet, Animated} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Intrenal imports
 import {normalize} from '../utils/resizingUtils';
 import {fetchUsers, createUser} from '../utils/requestManager';
+import { UserContext } from '../contexts.js';
 
 // Global variables
 const {
@@ -17,11 +18,12 @@ const LOGGED_USER_KEY = 'loggedUser';
 const uuidRegex = new RegExp('^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$');
 
 function LoginPage ({ navigation }) {
+  const {userId, setUserId} = useContext(UserContext);
+
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([]);
   const [invalidId, setInvalidId] = useState(false);
-  const [loggedUser, setLoggedUser] = useState(null);
   const [errorInvalidID, setErrorInvalidID] = useState(null);
   
   // when the screen is focused again, execute logout
@@ -29,7 +31,7 @@ function LoginPage ({ navigation }) {
     const logout = navigation.addListener('focus', () => {
       // Screen was agin  focused do something
       AsyncStorage.removeItem(LOGGED_USER_KEY);
-      setLoggedUser(null);
+      setUserId(null);
 
       fetchUsers()
         .then(users => {
@@ -46,7 +48,7 @@ function LoginPage ({ navigation }) {
     AsyncStorage.getItem(LOGGED_USER_KEY)
     .then(res => {
       if (res !== null) {
-        setLoggedUser(res);
+        setUserId(res);
       }
     })
 
@@ -61,11 +63,11 @@ function LoginPage ({ navigation }) {
   // when logged user is changed, save it in async storage
   // ang go to home screen
   useEffect( () => {
-    if (loggedUser !== null && loggedUser !== undefined) {
-      AsyncStorage.setItem(LOGGED_USER_KEY, loggedUser);
-      navigation.navigate('Home', {userId: loggedUser});
+    if (userId !== null && userId !== undefined) {
+      AsyncStorage.setItem(LOGGED_USER_KEY, userId);
+      navigation.navigate('Home');
     }
-  }, [loggedUser]);
+  }, [userId]);
 
   const handleLogin = () => {
     if (value === null || errorInvalidID !== null) {
@@ -75,7 +77,7 @@ function LoginPage ({ navigation }) {
     setInvalidId(false);
 
     // update logged user
-    setLoggedUser(value);
+    setUserId(value);
 
     createUser(value)
       .then(id => {
@@ -88,7 +90,7 @@ function LoginPage ({ navigation }) {
     //post create user, and than update users
     createUser(null)
       .then(id => {
-        setLoggedUser(id);
+        setUserId(id);
       })
       .catch(err => {throw err});
   }

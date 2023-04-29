@@ -1,5 +1,5 @@
 // External imports
-import React,{useState,useEffect,Linking} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import { View,StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
 import { BlurView } from 'expo-blur';
 import * as Notifications from 'expo-notifications';
@@ -34,9 +34,7 @@ function FatigueListItem({ item, onFatiguePress}){
   );
 }
 
-function FatigueDoubleListScreen({ navigation, route}) {
-
-  const {userId} = route.params;
+function FatigueDoubleListScreen({ navigation}) {
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
   const [clickedFatigueKey, setClickedFatigueKey] = useState(0);
   const [optionaText, setOptionalText] = React.useState('');
@@ -60,7 +58,7 @@ function FatigueDoubleListScreen({ navigation, route}) {
     // When a notification is received do this
     const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
       console.log('L\'utente ha cliccato sulla notifica:', response.notification);
-      navigation.navigate('Fatica', {userId: userId});
+      navigation.navigate('Fatica');
       // Esegui qui la logica per gestire il click sulla notifica
     });
 
@@ -98,7 +96,7 @@ function FatigueDoubleListScreen({ navigation, route}) {
     setConfirmationModalVisible(false);
     //go to the screen with task list
     handleButtonPress();
-    navigation.navigate('NextTaskScreen', {userId: userId ,fatigue: clickedFatigueKey, optionalComment: optionaText});
+    navigation.navigate('NextTaskScreen', {fatigue: clickedFatigueKey, optionalComment: optionaText});
   }
 
   function handleModalCancel(){

@@ -1,5 +1,5 @@
 // External imports
-import {React, useEffect, useState} from 'react';
+import {React, useEffect, useState, useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity,  Dimensions} from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 
@@ -7,6 +7,7 @@ import NetInfo from '@react-native-community/netinfo';
 import {normalize} from '../utils/resizingUtils';
 import ConfirmationModal from '../components/modals/ConfirmationModal';
 import {getTasksInProgress, closeTask} from '../utils/requestManager';
+import { UserContext } from '../contexts.js';
 
 // Global variables
 const {
@@ -16,8 +17,8 @@ const {
 const viewWidth = '95%';
 const defaultTaskValue = 'Nessuna';
 
-function HomeScreen({ navigation, route}) {
-    const { userId } = route.params;
+function HomeScreen({ navigation}) {
+    const { userId } = useContext(UserContext);
 
     const [currentTask, setCurrentTask] = useState(defaultTaskValue);
     const [terminateCurrentTaskModalVisible, setTerminateCurrentTaskModalVisible] = useState(false);
@@ -99,7 +100,7 @@ function HomeScreen({ navigation, route}) {
             <View style={styles.buttonCountainer}>
                 <TouchableOpacity
                     style={[styles.button, {backgroundColor: '#FF7F00'}]}
-                    onPress={() => navigation.navigate('Fatica', {userId: userId})}
+                    onPress={() => navigation.navigate('Fatica')}
                 >
                     <Text style={styles.buttonText}>Quanto sei stanco?</Text>
                 </TouchableOpacity>
@@ -107,7 +108,7 @@ function HomeScreen({ navigation, route}) {
                 <TouchableOpacity
                     style={[styles.button, {backgroundColor: '#6D986B'}]}
                     onPress={currentTask == defaultTaskValue ? 
-                        () => navigation.navigate('StartTaskScreen', {userId: userId, currentTask: currentTask}) : 
+                        () => navigation.navigate('StartTaskScreen', { currentTask: currentTask}) : 
                         () => handleTaskCompleted()}
                 >
                     <Text style={styles.buttonText}>{currentTask == defaultTaskValue ? "Inizia Task" : "Termina Task"  }</Text>
