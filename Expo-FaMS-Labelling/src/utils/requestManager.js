@@ -48,7 +48,9 @@ export const createUser = async (id) => {
             throw new Error("Failed to fetch users");
         }
 
-        let idUser = await response.data.user.idUser;
+        if(response.data.message !== null && response.data.message !== undefined && response.data.message !== "User already exist"){
+            idUser = await response.data.user.idUser;
+        }
 
         return idUser;
     } catch (err) {

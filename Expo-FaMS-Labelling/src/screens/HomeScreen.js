@@ -1,13 +1,12 @@
 // External imports
 import {React, useEffect, useState, useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity,  Dimensions} from 'react-native';
-import NetInfo from '@react-native-community/netinfo';
 
 // Intrenal imports
 import {normalize} from '../utils/resizingUtils';
 import ConfirmationModal from '../components/modals/ConfirmationModal';
 import {getTasksInProgress, closeTask} from '../utils/requestManager';
-import { UserContext } from '../contexts.js';
+import { UserContext, ConnectionContext} from '../contexts.js';
 
 // Global variables
 const {
@@ -19,21 +18,10 @@ const defaultTaskValue = 'Nessuna';
 
 function HomeScreen({ navigation}) {
     const { userId } = useContext(UserContext);
+    const { isConnected } = useContext(ConnectionContext);
 
     const [currentTask, setCurrentTask] = useState(defaultTaskValue);
     const [terminateCurrentTaskModalVisible, setTerminateCurrentTaskModalVisible] = useState(false);
-    const [isConnected, setIsConnected] = useState(false);
-    
-    useEffect( () => {
-
-        const unsubscribe = NetInfo.addEventListener(state => {
-            console.log("Connection type", state.type);
-            console.log("Is connected?", state.isConnected);
-            setIsConnected(state.isConnected);
-        });
-    
-        return () => unsubscribe();
-    }, []);
 
     useEffect(() => {
         const back = navigation.addListener('focus', () => {
