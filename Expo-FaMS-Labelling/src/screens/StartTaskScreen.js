@@ -87,8 +87,6 @@ function StartTaskScreen({ navigation, route}) {
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
   const [clickedItemId, setClickedItemId] = useState('');
   const [activeSections, setActiveSections] = useState([]);
-  const [submitUnexpectedActivity, setSubmitUnexpectedActivity] = useState(false);
-  const [newUnexpectedActivity, setNewUnexpectedActivity] = useState('');
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
@@ -107,7 +105,7 @@ function StartTaskScreen({ navigation, route}) {
 
   function handleModalConfirm(){
     setConfirmationModalVisible(false);
-    setSubmitUnexpectedActivity(false);
+
     startTask(userId, tasks.find((task) => task._id === clickedItemId).nameTask)
       .then((response) => {
         navigation.navigate('Home', {userId: userId});
@@ -117,12 +115,10 @@ function StartTaskScreen({ navigation, route}) {
 
   function handleModalCancel(){
     setConfirmationModalVisible(false);
-    setSubmitUnexpectedActivity(false);
   }
 
   function handleCreateUnexpectedActivity(){
     setSubmitUnexpectedActivity(true);
-    setConfirmationModalVisible(true);
   }
 
   const SECTIONS = [
@@ -268,21 +264,7 @@ function StartTaskScreen({ navigation, route}) {
               {tasks.length > 0 && clickedItemId ? tasks.find(item => item._id === clickedItemId).nameTask : ''}
             </Text>
           </ConfirmationModal>
-          
-
-          <Accordion
-            sections={SECTIONS}
-            activeSections={activeSections}
-            //renderSectionTitle={this._renderSectionTitle}
-            renderHeader={this._renderHeader}
-            renderContent={this._renderContent}
-            onChange={this._updateSections}
-            sectionContainerStyle={styles.sectionsContainer}
-            sectionTitleStyle={styles.sectionTitle}
-            headerStyle={styles.header}
-            contentStyle={styles.content}
-            activeSectionContainerStyle={styles.activeSectionContainer}
-          />
+        
 
           <FlatList
             contentContainerStyle={styles.flatList}

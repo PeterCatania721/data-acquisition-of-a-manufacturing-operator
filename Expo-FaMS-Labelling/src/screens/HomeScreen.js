@@ -1,7 +1,7 @@
 // External imports
 import {React, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity,  Dimensions} from 'react-native';
-import axios from 'axios';
+import NetInfo from '@react-native-community/netinfo';
 
 // Intrenal imports
 import {normalize} from '../utils/resizingUtils';
@@ -21,6 +21,18 @@ function HomeScreen({ navigation, route}) {
 
     const [currentTask, setCurrentTask] = useState(defaultTaskValue);
     const [terminateCurrentTaskModalVisible, setTerminateCurrentTaskModalVisible] = useState(false);
+    const [isConnected, setIsConnected] = useState(false);
+    
+    useEffect( () => {
+
+        const unsubscribe = NetInfo.addEventListener(state => {
+            console.log("Connection type", state.type);
+            console.log("Is connected?", state.isConnected);
+            setIsConnected(state.isConnected);
+        });
+    
+        return () => unsubscribe();
+    }, []);
 
     useEffect(() => {
         const back = navigation.addListener('focus', () => {
@@ -80,6 +92,9 @@ function HomeScreen({ navigation, route}) {
             </View>
             <View style={styles.topContainer}>
                 <Text style={styles.topTextLabel}>Attività in Esecuzione: <Text style={styles.boldText}>{currentTask}</Text></Text> 
+            </View>
+            <View style={styles.topContainer}>
+                <Text style={styles.topTextLabel}>Connesso ad Internet: <Text style={styles.boldText}>{isConnected ? "connesso" : "non conneso"}</Text></Text> 
             </View>
             <View style={styles.buttonCountainer}>
                 <TouchableOpacity

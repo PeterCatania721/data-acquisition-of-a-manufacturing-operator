@@ -1,5 +1,5 @@
 // External imports
-import React, { useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Dimensions, TouchableOpacity, Text, StyleSheet, Animated} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';

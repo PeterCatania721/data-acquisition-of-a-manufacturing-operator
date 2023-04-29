@@ -2,7 +2,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { HeaderTitle } from '@react-navigation/elements';
 import { createStackNavigator } from '@react-navigation/stack';
-import React from 'react';
+import {React} from 'react';
 import {StyleSheet, Dimensions} from 'react-native';
 
 // Internal imports
