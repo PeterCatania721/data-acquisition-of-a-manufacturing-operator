@@ -33,7 +33,7 @@ export const create = async (req, res) => {
 
     const id = req.body.idUser;
     if (id != null && await checkExistUser(id)) {
-      res.status(200).json({ success: true, message: "User already exist" });
+      res.status(200).json({ success: true, message: "User already exist", user: {idUser: id}});
       return;
     }
 
@@ -44,7 +44,7 @@ export const create = async (req, res) => {
 
     await user.save();
 
-    res.status(201).json({user });
+    res.status(201).json({user});
     
 
   } catch (error) {

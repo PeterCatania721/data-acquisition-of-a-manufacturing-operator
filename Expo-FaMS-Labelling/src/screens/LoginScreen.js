@@ -84,15 +84,13 @@ function LoginPage ({ navigation }) {
     setUserId(value);
 
     createUser(value)
-      .then(id => {
-        navigation.navigate('Home', {userId: value});
-      })
+      .then(navigation.navigate('Home', {userId: value}))
       .catch(err => {throw err});
   }
 
   const handleRegister = () => {
     //post create user, and than update users
-    createUser(null)
+    createUser()
       .then(id => {
         setUserId(id);
       })

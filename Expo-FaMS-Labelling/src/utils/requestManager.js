@@ -48,11 +48,7 @@ export const createUser = async (id) => {
             throw new Error("Failed to fetch users");
         }
 
-        if(response.data.message !== null && response.data.message !== undefined && response.data.message !== "User already exist"){
-            idUser = await response.data.user.idUser;
-        }
-
-        return idUser;
+        return response.data.user.idUser;
     } catch (err) {
         if(axios.isCancel(err)){
             console.log('Data fetching cancelled');
