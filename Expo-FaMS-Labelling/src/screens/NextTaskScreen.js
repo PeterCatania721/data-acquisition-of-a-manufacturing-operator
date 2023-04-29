@@ -116,11 +116,14 @@ function NextTaskScreen({ navigation, route}) {
     setConfirmationModalVisible(false);
     setSubmitUnexpectedActivity(false);
 
+    // TODO: if no connection save to local storage
+
     // wait for addSuvrey to finish, before navigating to Home
     addSurvey(userId, fatigue, taskName, optionalComment)
       .then(() => {
         navigation.navigate('Home', {userId: userId})
       });
+
   }
 
   function handleModalCancel(){
