@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Intrenal imports
 import {normalize} from '../utils/resizingUtils';
 import {fetchUsers, createUser} from '../utils/requestManager';
-import { UserContext } from '../contexts.js';
+import { UserContext, ConnectionContext} from '../contexts.js';
 import Constants from '../utils/constants.js';
 
 // Global variables
@@ -20,9 +20,9 @@ const {
   UUID_REGEX,
 } = Constants;
 
-
 function LoginPage ({ navigation }) {
   const {userId, setUserId} = useContext(UserContext);
+  const {isConnected} = useContext(ConnectionContext);
 
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -115,62 +115,72 @@ function LoginPage ({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Scegli il tuo ID</Text>
-
-      {errorInvalidID !== null && <Text style={styles.errorMsg}>{errorInvalidID}</Text> }
-
-      <DropDownPicker
-        zIndex={1000}
-        style={[styles.IdDropdown, invalidId && styles.invalidId]}
-        dropDownContainerStyle={[styles.IdDropdown]}
-        language="IT"
-        open={open}
-        value={value}
-        items={items}
-        searchable={true}
-        onChangeSearchText={handleSearch}
-        onChangeValue={() => {verifyId(value)}}
-        addCustomItem={true}
-        setOpen={setOpen}
-        setValue={setValue}
-        setItems={setItems}
-        placeholder='Iserisci il tuo ID'
-        searchPlaceholder='Il tuo ID...'
-        textStyle={ { fontSize: normalize(20, SCREEN_WIDTH)} }
-        mode="SIMPLE"
-        listMode="SCROLLVIEW"
-
-        labelStyle={[invalidId && styles.invalidId]}
-        labelContainerStyle={ invalidId && styles.invalidId }
-
-
-        placeholderStyle={ invalidId && styles.invalidId }
-
-        selectedItemLabelStyle={{ fontWeight: "bold"}}
-        listItemLabelStyle={styles.idItemLabel}
-        itemSeparator={true}
-      />
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          style={styles.button} 
-          onPress={handleLogin}
-        >
-          <Text style={styles.buttonText}>Accedi</Text>
-        </TouchableOpacity>
+    <>
+      <View style={styles.topContainer}>
+          <Text style={styles.topTextLabel}>Connessione Internet: <Text style={styles.boldText}>{isConnected ? "connesso" : "non conneso"}</Text></Text> 
       </View>
+      <View style={styles.container}>
+        
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          style={[styles.button, styles.buttonRegister]} 
-          onPress={handleRegister}
-        >
-          <Text style={[styles.buttonText,styles.buttonTextRegister]}>Registrati</Text>
-        </TouchableOpacity>
+        <Text style={styles.title}>Scegli il tuo ID</Text>
+
+        {errorInvalidID !== null || !isConnected && <Text style={styles.errorMsg}>{isConnected ? errorInvalidID: "Verifica la Connessione prima di procedere"}</Text> }
+
+        <DropDownPicker
+          zIndex={1000}
+          disabled={!isConnected}
+          style={[styles.IdDropdown, invalidId && styles.invalidId, !isConnected && styles.disabledDropdown]}
+          dropDownContainerStyle={[styles.IdDropdown]}
+          language="IT"
+          open={open}
+          value={value}
+          items={items}
+          searchable={true}
+          onChangeSearchText={handleSearch}
+          onChangeValue={() => {verifyId(value)}}
+          addCustomItem={true}
+          setOpen={setOpen}
+          setValue={setValue}
+          setItems={setItems}
+          placeholder='Iserisci il tuo ID'
+          searchPlaceholder='Il tuo ID...'
+          textStyle={ { fontSize: normalize(20, SCREEN_WIDTH)} }
+          mode="SIMPLE"
+          listMode="SCROLLVIEW"
+
+          labelStyle={[invalidId && styles.invalidId]}
+          labelContainerStyle={ invalidId && styles.invalidId }
+
+
+          placeholderStyle={ invalidId && styles.invalidId }
+
+          selectedItemLabelStyle={{ fontWeight: "bold"}}
+          listItemLabelStyle={styles.idItemLabel}
+          itemSeparator={true}
+        />
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            style={[styles.button, !isConnected && styles.disabledButton]} 
+            onPress={handleLogin}
+            disabled={!isConnected || invalidId}
+          >
+            <Text style={styles.buttonText}>Accedi</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            style={[styles.button, styles.buttonRegister, !isConnected && styles.disabledButton]} 
+            onPress={handleRegister}
+            disabled={!isConnected}
+          >
+            <Text style={[styles.buttonText,styles.buttonTextRegister, !isConnected && styles.disabledText]}>Registrati</Text>
+          </TouchableOpacity>
+        </View>
+
       </View>
-
-    </View>
+    </>
   );
 };
 
@@ -245,6 +255,32 @@ const styles = StyleSheet.create({
     fontSize: normalize(15, SCREEN_WIDTH),
     fontWeight: "bold",
     marginBottom: 8,
+  },
+  topContainer: {
+    alignItems: 'center',
+    //justifyContent: 'top',
+    width: '100%',
+  },
+  topTextLabel: {
+    fontSize: normalize(12, SCREEN_WIDTH),
+    textAlign: 'left',
+    marginTop: 5,
+  },
+  boldText: {
+    fontWeight: 'bold',
+  },
+  disabledButton: {
+    backgroundColor: 'grey',
+    borderColor: 'grey',
+    disabled: true,
+  },
+  disabledText: {
+    color: 'white',
+  },
+  disabledDropdown: {
+    backgroundColor: 'grey',
+    borderColor: 'white',
+    disabled: true,
   },
 }); 
 
