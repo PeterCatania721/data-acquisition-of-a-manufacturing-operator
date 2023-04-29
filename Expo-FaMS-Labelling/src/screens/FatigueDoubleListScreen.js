@@ -1,7 +1,8 @@
 // External imports
-import React,{useState} from 'react';
+import React,{useState,useEffect,Linking} from 'react';
 import { View,StyleSheet, Text, TouchableOpacity, Dimensions} from 'react-native';
 import { BlurView } from 'expo-blur';
+import * as Notifications from 'expo-notifications';
 
 // Internal imports
 import ConfirmationModal from '../components/modals/ConfirmationModal';
@@ -39,6 +40,75 @@ function FatigueDoubleListScreen({ navigation, route}) {
   const [clickedFatigueKey, setClickedFatigueKey] = useState(0);
   const [optionaText, setOptionalText] = React.useState('');
 
+   
+  useEffect(() => {
+    // Richiedi il permesso per ricevere notifiche
+    Notifications.requestPermissionsAsync().then((status) => {
+      console.log('Permission status:', status);
+    });
+
+    // Imposta un gestore per le notifiche ricevute dall'app
+   // Imposta un gestore per le notifiche ricevute dall'app
+   Notifications.setNotificationHandler({
+    handleNotification: async (notification) => {
+
+      return {
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      };
+    },
+  });
+/*
+    // Programma l'invio di notifiche ogni 30 secondi
+    const interval = setInterval(() => {
+      Notifications.scheduleNotificationAsync({
+        content: {
+          title: 'Notifica',
+          body: 'Questa è una notifica di prova',
+          
+        },
+        trigger: {
+          seconds: 30,
+        },
+      });
+    }, 30000);
+
+    // Cancella l'intervallo alla chiusura dell'app
+    return () => clearInterval(interval);
+    */
+  // Aggiungi un gestore per l'evento di click sulla notifica
+  const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+    console.log('L\'utente ha cliccato sulla notifica:', response.notification);
+    navigation.navigate('Fatica', {userId: userId});
+    // Esegui qui la logica per gestire il click sulla notifica
+  });
+
+  // Cancella la sottoscrizione quando il componente viene smontato
+  return () => {
+    subscription.remove();
+  };
+}, []);
+
+  
+  const handleButtonPress = () => {
+    console.log('Invio notifica');
+    Notifications.scheduleNotificationAsync({
+    content: {
+    title: '!!!PROMEMORIA!!!',
+   sound: 'default',
+   priority: 'high',
+   vibrate: [255, 255, 255, 255],
+   sticky: true,
+    body: 'aggiungi la tua fatica percepita',
+   // data: { action: 'login' },
+    },
+    trigger: {
+      seconds:10,
+    },
+    });
+    };
+
   function handleFatiguePress(item){
     setClickedFatigueKey(item.key);
     setConfirmationModalVisible(true);
@@ -47,6 +117,7 @@ function FatigueDoubleListScreen({ navigation, route}) {
   function handleModalConfirm(){
     setConfirmationModalVisible(false);
     //go to the screen with task list
+    handleButtonPress();
     navigation.navigate('NextTaskScreen', {userId: userId ,fatigue: clickedFatigueKey, optionalComment: optionaText});
   }
 
