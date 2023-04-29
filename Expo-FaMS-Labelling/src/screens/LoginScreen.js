@@ -8,14 +8,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {normalize} from '../utils/resizingUtils';
 import {fetchUsers, createUser} from '../utils/requestManager';
 import { UserContext } from '../contexts.js';
+import Constants from '../utils/constants.js';
 
 // Global variables
 const {
   width: SCREEN_WIDTH,
   height: SCREEN_HEIGHT,
 } = Dimensions.get('window');
-const LOGGED_USER_KEY = 'loggedUser';
-const uuidRegex = new RegExp('^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$');
+const {
+  LOGGED_USER_KEY,
+  UUID_REGEX,
+} = Constants;
+
 
 function LoginPage ({ navigation }) {
   const {userId, setUserId} = useContext(UserContext);
@@ -97,11 +101,11 @@ function LoginPage ({ navigation }) {
 
   const handleSearch = (text) => {
     // put only the check right to the custom id if id is valid
-    setValue(uuidRegex.test(text) ? text : null);
+    setValue(UUID_REGEX.test(text) ? text : null);
   }
 
   const verifyId = (id) => {
-    const isInvalid = !uuidRegex.test(id);
+    const isInvalid = !UUID_REGEX.test(id);
 
     if(id === null || id === undefined || id === "") {
       setErrorInvalidID("Seleziona un ID!");
