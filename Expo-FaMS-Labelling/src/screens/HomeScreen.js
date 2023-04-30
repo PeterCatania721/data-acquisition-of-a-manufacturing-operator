@@ -5,8 +5,9 @@ import {View, Text, StyleSheet, TouchableOpacity,  Dimensions} from 'react-nativ
 // Intrenal imports
 import {normalize} from '../utils/resizingUtils';
 import ConfirmationModal from '../components/modals/ConfirmationModal';
-import {getTasksInProgress, closeTask} from '../utils/requestManager';
+import { getTasksInProgress, closeTask} from '../utils/requestManager';
 import { UserContext, ConnectionContext} from '../contexts.js';
+import { saveEndTask, getCurrentActivity } from '../utils/localStorage';
 
 // Global variables
 const {
@@ -34,6 +35,18 @@ function HomeScreen({ navigation}) {
             .catch(err =>{ 
                 console.log("Error during get current task in progress: ",err); 
             });
+
+            getCurrentActivity()
+                .then(currentTask => {
+                    if (currentTask != null) {
+                        //setCurrentTask(currentTask);
+                        console.log("Get Current Activity: ", currentTask);
+                    }
+                    console.log("Get Current Activity: ", "Nessuna");
+                })  
+                .catch(err => {
+                    console.log("Error during get current task in progress in local storage: ",err);
+                });
         });
     
         return back;
@@ -55,6 +68,7 @@ function HomeScreen({ navigation}) {
         .catch(err => { 
             console.log("Error during terminaing task: ",err); 
         });
+        saveEndTask(currentTask, true);
 
         setTerminateCurrentTaskModalVisible(false);
     }

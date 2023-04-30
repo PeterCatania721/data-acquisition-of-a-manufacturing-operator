@@ -172,6 +172,13 @@ export const addSurvey = async (userId, fatigue, taskName, comment) => {
         
         // check if askInProgress array is empty
         if (tasksInProgress.length > 0) {
+
+            // if the task in progress is the same of the new task, add only the fatigue and comment
+            if( tasksInProgress[0].nameTask === taskName){
+                const addFatigueResult = await addFatigue(userId, fatigue, comment);
+                return;
+            }
+
             // close the task in progress
             await closeTask(userId)
                 .then((response) => {

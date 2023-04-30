@@ -12,7 +12,6 @@ const fatigueModel = new mongoose.Schema({
   comment : {
     type : String,
     default : ""
-    
   },
   task: {
     type: String,

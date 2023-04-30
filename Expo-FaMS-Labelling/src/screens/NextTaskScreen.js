@@ -8,6 +8,7 @@ import Accordion from 'react-native-collapsible/Accordion';
 import ConfirmationModal from '../components/modals/ConfirmationModal';
 import { addSurvey } from '../utils/requestManager';
 import { UserContext } from '../contexts.js';
+import { saveSurveyData } from '../utils/localStorage';
 
 
 const styles = StyleSheet.create({
@@ -118,14 +119,14 @@ function NextTaskScreen({ navigation, route}) {
     setConfirmationModalVisible(false);
     setSubmitUnexpectedActivity(false);
 
-    // TODO: if no connection save to local storage
+    console.log('task name: ', taskName);
+    saveSurveyData(fatigue, taskName, optionalComment, true);
 
     // wait for addSuvrey to finish, before navigating to Home
     addSurvey(userId, fatigue, taskName, optionalComment)
       .then(() => {
         navigation.navigate('Home')
       });
-
   }
 
   function handleModalCancel(){

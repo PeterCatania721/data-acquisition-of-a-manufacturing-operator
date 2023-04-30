@@ -7,6 +7,7 @@ import { BlurView } from 'expo-blur';
 import ConfirmationModal from '../components/modals/ConfirmationModal';
 import { getTaskByGroup, startTask } from '../utils/requestManager';
 import { UserContext } from '../contexts.js';
+import { saveStartTask } from '../utils/localStorage';
 
 
 const styles = StyleSheet.create({
@@ -105,11 +106,16 @@ function StartTaskScreen({ navigation}) {
 
   function handleModalConfirm(){
     setConfirmationModalVisible(false);
+    const currentTask = tasks.find((task) => task._id === clickedItemId).nameTask;
 
-    startTask(userId, tasks.find((task) => task._id === clickedItemId).nameTask)
+    startTask(userId, currentTask)
       .then((response) => {
         navigation.navigate('Home', {userId: userId});
       })
+      .catch((error) => console.log(error));
+
+    saveStartTask(currentTask, true)
+      .then(() => console.log('Task saved'))
       .catch((error) => console.log(error));
   }
 
