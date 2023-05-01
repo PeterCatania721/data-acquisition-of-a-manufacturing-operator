@@ -337,7 +337,7 @@ export const getOfflineGroupTasksByGroup = async (group) => {
         const getGroupTasks = await AsyncStorage.getItem(OFFLINE_GROUP_TASKS_KEY);
         const groupTasksParsed = JSON.parse(getGroupTasks);
 
-        return groupTasksParsed ? groupTasksParsed.tasks.filter(task => task.group === group) : [];
+        return groupTasksParsed ? groupTasksParsed.filter(task => task.group === group) : [];
     } catch (error) {
         console.log("error while get group tasks");
         console.log(error);
