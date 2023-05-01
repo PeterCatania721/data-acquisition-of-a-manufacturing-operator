@@ -88,7 +88,6 @@ function StartTaskScreen({ navigation}) {
 
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
   const [clickedItemId, setClickedItemId] = useState('');
-  const [activeSections, setActiveSections] = useState([]);
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
@@ -139,51 +138,6 @@ function StartTaskScreen({ navigation}) {
     setConfirmationModalVisible(false);
   }
 
-  function handleCreateUnexpectedActivity(){
-    setSubmitUnexpectedActivity(true);
-  }
-
-  const SECTIONS = [
-    {
-      title: 'Nuova Attività',
-    },
-  ];
-
-  _renderContent = (section) => {
-    return (
-      <View style={styles.content}>
-        <View style={styles.formContainer}>
-          <TextInput
-            style={styles.unuxpectedActivityInput}
-            placeholder="Fare ..."
-            multiline={true}
-            numberOfLines={4}
-            onChangeText={(text) => setNewUnexpectedActivity(text)}
-          />
-
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={handleCreateUnexpectedActivity}
-          >
-            <Text style={styles.submitButtonText}>Inizia</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
-
-  _renderHeader = (section) => {
-    return (
-      <View style={[styles.header, styles.activeSectionContainer]}>
-        <Text style={styles.headerText}>{section.title}</Text>
-      </View>
-    );
-  };
-
-  _updateSections = (activeSections) => {
-    setActiveSections(activeSections);
-  };
-
   const styles = StyleSheet.create({
     absoluteBlurView: {
       position: 'absolute',
@@ -208,62 +162,6 @@ function StartTaskScreen({ navigation}) {
       padding: 10,
       borderRadius: 10,
       backgroundColor: '#f2f2f2',
-    },
-    sectionTitle: {
-      fontWeight: 'bold',
-      fontSize: 16,
-    },
-    header: {
-      backgroundColor: '#e74c3c',
-      padding: 10,
-      marginTop: 20,
-    },
-    headerText: {
-      fontWeight: 'bold',
-      fontSize: 20,
-    },
-    content: {
-      borderColor: '#e74c3c',
-      borderWidth: 7,
-      padding: 10,
-      marginBottom: 10, 
-      borderBottomStartRadius: 10,
-      borderBottomEndRadius: 10,
-    },
-    contentText: {
-      fontSize: 20,
-    },
-    activeSectionContainer: {
-      backgroundColor: '#e74c3c',
-      borderTopRightRadius: 10,
-      borderTopLeftRadius: 10,
-      borderBottomRightRadius: activeSections.length === 0 ? 10 : 0,
-      borderBottomLeftRadius: activeSections.length === 0 ? 10 : 0,
-    },
-    sectionsContainer: {
-      backgroundColor: 'white',
-    },
-    sectionTitle: {
-      backgroundColor: 'white',
-    },
-    submitButton: {
-      backgroundColor: '#b93f30',
-      padding: 10,
-      borderRadius: 10,
-      marginTop: 20,
-    },
-    submitButtonText: {
-      fontSize: 20,
-      color: '#fff',
-      fontWeight: 'bold',
-      textAlign: 'center',
-    },
-    unuxpectedActivityInput: {
-      backgroundColor: '#f2f2f2',
-      padding: 10,
-      borderRadius: 10,
-      fontSize: 20,
-      textAlignVertical: 'top',
     },
   });  
 
