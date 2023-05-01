@@ -295,6 +295,7 @@ export const getCurrentActivity = async () => {
             }
         }
 
+        console.log("start", start && !end ? "true" : "false", "\n" + start,"\n" + end, "\n" , dataParsed);
         // if there is a start task and there is not an end task, return the current activity
         return start && !end ? start.startTask.currentActivity : null;
     } catch (error) {
@@ -353,6 +354,16 @@ export const getOfflineUsers = async () => {
         return usersParsed;
     } catch (error) {
         console.log("error while get users");
+        console.log(error);
+    }
+}
+
+// clear all data
+export const clearAllData = async () => {
+    try {
+        await AsyncStorage.removeItem(OFFLINE_DATA_KEY);
+    } catch (error) {
+        console.log("error while clearing all data");
         console.log(error);
     }
 }

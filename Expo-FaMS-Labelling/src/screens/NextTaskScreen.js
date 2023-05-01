@@ -11,7 +11,6 @@ import { UserContext } from '../contexts.js';
 import { ConnectionContext } from '../contexts.js';
 import { saveSurveyData } from '../utils/localStorage';
 
-
 const styles = StyleSheet.create({
   button: {
       flex: 1,
@@ -121,6 +120,14 @@ function NextTaskScreen({ navigation, route}) {
     setConfirmationModalVisible(false);
     setSubmitUnexpectedActivity(false);
 
+    // save survey data locally
+    saveSurveyData(fatigue, taskName, optionalComment, isConnected)
+      .then(() => {
+        if(!isConnected){
+          navigation.navigate('Home');
+        }
+      });
+
     if(isConnected){
       // wait for addSuvrey to finish, before navigating to Home
       addSurvey(userId, fatigue, taskName, optionalComment)
@@ -128,15 +135,6 @@ function NextTaskScreen({ navigation, route}) {
           navigation.navigate('Home')
         });
     }
-
-    // save survey data locally
-    saveSurveyData(fatigue, taskName, optionalComment, isConnected)
-      .then(() => {
-        if(isConnected){
-          navigation.navigate('Home');
-        }
-      });
-
   }
 
   function handleModalCancel(){

@@ -113,9 +113,17 @@ function StartTaskScreen({ navigation}) {
     setConfirmationModalVisible(true);
   }
 
-  function handleModalConfirm(){
+  async function handleModalConfirm(){
     setConfirmationModalVisible(false);
     const currentTask = tasks.find((task) => task._id === clickedItemId).nameTask;
+
+    const responce = await saveStartTask(currentTask, isConnected)
+      .then(() => {
+        if (!isConnected) {
+          navigation.navigate('Home');
+        }
+      })
+      .catch((error) => console.log(error));
 
     if(isConnected) {
       startTask(userId, currentTask)
@@ -123,15 +131,7 @@ function StartTaskScreen({ navigation}) {
           navigation.navigate('Home');
         })
         .catch((error) => console.log(error));
-    }
-
-    saveStartTask(currentTask, isConnected)
-      .then(() => {
-        if (!isConnected) {
-          navigation.navigate('Home');
-        }
-      })
-      .catch((error) => console.log(error));
+    }    
   }
 
   function handleModalCancel(){

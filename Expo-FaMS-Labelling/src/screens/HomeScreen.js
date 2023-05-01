@@ -7,7 +7,7 @@ import {normalize} from '../utils/resizingUtils';
 import ConfirmationModal from '../components/modals/ConfirmationModal';
 import { getTasksInProgress, closeTask} from '../utils/requestManager';
 import { UserContext, ConnectionContext} from '../contexts.js';
-import { saveEndTask, getCurrentActivity } from '../utils/localStorage';
+import { saveEndTask, getCurrentActivity, clearAllData } from '../utils/localStorage';
 
 // Global variables
 const {
@@ -20,7 +20,7 @@ const defaultTaskValue = 'Nessuna';
 function HomeScreen({ navigation}) {
     const { userId } = useContext(UserContext);
     const { isConnected } = useContext(ConnectionContext);
-
+    
     const [currentTask, setCurrentTask] = useState(defaultTaskValue);
     const [terminateCurrentTaskModalVisible, setTerminateCurrentTaskModalVisible] = useState(false);
 
@@ -30,6 +30,7 @@ function HomeScreen({ navigation}) {
             if(isConnected){
                 getTasksInProgress(userId)
                     .then(tasks => {
+                        console.log("tasks: ", tasks);
                         if (tasks.length > 0) {
                             setCurrentTask(tasks[0].nameTask);
                         }
@@ -40,7 +41,8 @@ function HomeScreen({ navigation}) {
 
             } else {
                 getCurrentActivity()
-                    .then(currentTask => {                        
+                    .then(currentTask => {            
+                        console.log("currentTask: ", currentTask);            
                         setCurrentTask(currentTask == null ? "Nessuna" : currentTask);
                     })  
                     .catch(err => {
@@ -48,9 +50,36 @@ function HomeScreen({ navigation}) {
                     });
             }
         });
+        //clearAllData();
     
         return back;
     }, [navigation]);
+
+    useEffect(() => {
+        if(isConnected){
+            getTasksInProgress(userId)
+                .then(tasks => {
+                    console.log("tasks: ", tasks);
+                    if (tasks.length > 0) {
+                        setCurrentTask(tasks[0].nameTask);
+                    }
+                })
+                .catch(err =>{ 
+                    console.log("Error during get current task in progress: ",err); 
+                });
+
+        } else {
+            getCurrentActivity()
+                .then(currentTask => {            
+                    console.log("currentTask: ", currentTask);            
+                    setCurrentTask(currentTask == null ? "Nessuna" : currentTask);
+                })  
+                .catch(err => {
+                    console.log("Error during get current task in progress in local storage: ",err);
+                });
+        } 
+        
+    }, []);
 
     const handleTaskCompleted = () => {
         if (currentTask == defaultTaskValue) {
