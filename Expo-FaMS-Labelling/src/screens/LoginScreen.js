@@ -9,6 +9,7 @@ import {normalize} from '../utils/resizingUtils';
 import {fetchUsers, createUser} from '../utils/requestManager';
 import { UserContext, ConnectionContext} from '../contexts.js';
 import Constants from '../utils/constants.js';
+import {getOfflineUsers} from '../utils/localStorage';
 
 // Global variables
 const {
@@ -27,8 +28,7 @@ function LoginPage ({ navigation }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([]);
-  const [invalidId, setInvalidId] = useState(false);
-  const [errorInvalidID, setErrorInvalidID] = useState(null);
+  const [errorInvalidID, setErrorInvalidId] = useState(null);
   
   // when the screen is focused again, execute logout
   useEffect(() => {
@@ -36,13 +36,8 @@ function LoginPage ({ navigation }) {
       // Screen was agin  focused do something
       AsyncStorage.removeItem(LOGGED_USER_KEY);
       setUserId(null);
-
-      fetchUsers()
-        .then(users => {
-          setItems(users);
-        })
-        .catch(err => {throw err});
     });
+
     return logout;
   }, [navigation]);
 
@@ -55,13 +50,6 @@ function LoginPage ({ navigation }) {
         setUserId(res);
       }
     })
-
-    fetchUsers()
-      .then(users => {
-        setItems(users);
-      })
-      .catch(err => {throw err});
-
   }, []);
 
   // when logged user is changed, save it in async storage
@@ -75,10 +63,10 @@ function LoginPage ({ navigation }) {
 
   const handleLogin = () => {
     if (value === null || errorInvalidID !== null) {
-      setErrorInvalidID(errorInvalidID === null ? "Seleziona un ID!" : errorInvalidID);
+      setErrorInvalidId(errorInvalidID === null ? "Seleziona un ID!" : errorInvalidID);
       return;
     }
-    setInvalidId(false);
+    setErrorInvalidId(null);
 
     // update logged user
     setUserId(value);
@@ -106,11 +94,11 @@ function LoginPage ({ navigation }) {
     const isInvalid = !UUID_REGEX.test(id);
 
     if(id === null || id === undefined || id === "") {
-      setErrorInvalidID("Seleziona un ID!");
+      setErrorInvalidId("Seleziona un ID!");
     } else if (isInvalid) {
-      setErrorInvalidID("ID non valido!");
+      setErrorInvalidId("ID non valido!");
     } else {
-      setErrorInvalidID(null);
+      setErrorInvalidId(null);
     }
   }
 
@@ -124,12 +112,11 @@ function LoginPage ({ navigation }) {
 
         <Text style={styles.title}>Scegli il tuo ID</Text>
 
-        {errorInvalidID !== null || !isConnected && <Text style={styles.errorMsg}>{isConnected ? errorInvalidID: "Verifica la Connessione prima di procedere"}</Text> }
+        {(errorInvalidID !== null || !isConnected) && <Text style={styles.errorMsg}>{isConnected ? errorInvalidID: "Verifica la Connessione prima di procedere"}</Text> }
 
         <DropDownPicker
           zIndex={1000}
-          disabled={!isConnected}
-          style={[styles.IdDropdown, invalidId && styles.invalidId, !isConnected && styles.disabledDropdown]}
+          style={[styles.IdDropdown, errorInvalidID !== null && styles.invalidId]}
           dropDownContainerStyle={[styles.IdDropdown]}
           language="IT"
           open={open}
@@ -138,7 +125,7 @@ function LoginPage ({ navigation }) {
           searchable={true}
           onChangeSearchText={handleSearch}
           onChangeValue={() => {verifyId(value)}}
-          addCustomItem={true}
+          addCustomItem={isConnected}
           setOpen={setOpen}
           setValue={setValue}
           setItems={setItems}
@@ -148,11 +135,11 @@ function LoginPage ({ navigation }) {
           mode="SIMPLE"
           listMode="SCROLLVIEW"
 
-          labelStyle={[invalidId && styles.invalidId]}
-          labelContainerStyle={ invalidId && styles.invalidId }
+          labelStyle={[errorInvalidID !== null && styles.invalidId]}
+          labelContainerStyle={ errorInvalidID !== null && styles.invalidId }
 
 
-          placeholderStyle={ invalidId && styles.invalidId }
+          placeholderStyle={ errorInvalidID !== null && styles.invalidId }
 
           selectedItemLabelStyle={{ fontWeight: "bold"}}
           listItemLabelStyle={styles.idItemLabel}
@@ -161,9 +148,9 @@ function LoginPage ({ navigation }) {
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity 
-            style={[styles.button, !isConnected && styles.disabledButton]} 
+            style={[styles.button, errorInvalidID !== null && styles.disabledButton]} 
             onPress={handleLogin}
-            disabled={!isConnected || invalidId}
+            disabled={!isConnected || errorInvalidID !== null}
           >
             <Text style={styles.buttonText}>Accedi</Text>
           </TouchableOpacity>

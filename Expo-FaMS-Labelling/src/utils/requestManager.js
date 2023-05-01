@@ -220,3 +220,28 @@ export const getTaskByGroup = async (group) => {
         }
     }
 }
+
+export const getGroupTasks = async () => {
+    try {
+        let response = await axios.get(`${API_BASE_URL}getGroupTasks`);
+    
+        if (response.status !== 200) {
+            throw new Error("Failed to fetch users");
+        }
+
+        let tasks = await response.data.tasks;
+
+        if (tasks && tasks.length > 0) {
+            return tasks;
+        }
+
+        return [];
+    } catch (err) {
+        if(axios.isCancel(err)){
+            console.log('Data fetching cancelled');
+        }else{
+            console.log("Error while fetching group tasks");
+            console.log(err);
+        }
+    }
+}

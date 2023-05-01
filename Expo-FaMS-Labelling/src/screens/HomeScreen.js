@@ -26,27 +26,27 @@ function HomeScreen({ navigation}) {
 
     useEffect(() => {
         const back = navigation.addListener('focus', () => {
-            getTasksInProgress(userId)
-                .then(tasks => {
-                    if (tasks.length > 0) {
-                        setCurrentTask(tasks[0].nameTask);
-                    }
-                })
-            .catch(err =>{ 
-                console.log("Error during get current task in progress: ",err); 
-            });
 
-            getCurrentActivity()
-                .then(currentTask => {
-                    if (currentTask != null) {
-                        //setCurrentTask(currentTask);
-                        console.log("Get Current Activity: ", currentTask);
-                    }
-                    console.log("Get Current Activity: ", "Nessuna");
-                })  
-                .catch(err => {
-                    console.log("Error during get current task in progress in local storage: ",err);
-                });
+            if(isConnected){
+                getTasksInProgress(userId)
+                    .then(tasks => {
+                        if (tasks.length > 0) {
+                            setCurrentTask(tasks[0].nameTask);
+                        }
+                    })
+                    .catch(err =>{ 
+                        console.log("Error during get current task in progress: ",err); 
+                    });
+
+            } else {
+                getCurrentActivity()
+                    .then(currentTask => {                        
+                        setCurrentTask(currentTask == null ? "Nessuna" : currentTask);
+                    })  
+                    .catch(err => {
+                        console.log("Error during get current task in progress in local storage: ",err);
+                    });
+            }
         });
     
         return back;
@@ -61,14 +61,15 @@ function HomeScreen({ navigation}) {
     }
 
     function handleTerminateCurrentTaskConfirm(){
-        closeTask(userId)
-        .then(res => {
-            setCurrentTask('Nessuna');
-        })
-        .catch(err => { 
-            console.log("Error during terminaing task: ",err); 
-        });
-        saveEndTask(currentTask, true);
+        if (isConnected) {
+            closeTask(userId)
+                .then(() => setCurrentTask('Nessuna') )
+                .catch(err => console.log("Error during terminaing task: ",err) );
+        }
+
+        saveEndTask(currentTask, isConnected)
+            .then(() => !isConnected && setCurrentTask('Nessuna') )
+            .catch(err => console.log("Error during save end task in local storage: ", err) );
 
         setTerminateCurrentTaskModalVisible(false);
     }

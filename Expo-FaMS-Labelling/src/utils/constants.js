@@ -28,6 +28,8 @@ const Constants = {
             sendedToServer: sentToServer,
         }}
     },
+    OFFLINE_GROUP_TASKS_KEY: 'offlineGroupTasks',
+    OFFLINE_USERS_KEY: 'offlineUsers',
     UUID_REGEX: new RegExp('^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$'),
     API_BASE_URL: 'http://192.168.1.122:4000/api/v1/',
 }

@@ -3,10 +3,23 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Intrenal imports
 import Constants from './constants';
-import { startTask, addFatigue, closeTask } from "./requestManager";
+import { 
+    startTask, 
+    addFatigue, 
+    closeTask,
+    fetchUsers,
+    getGroupTasks, 
+} from "./requestManager";
 
 // Global variables
-const { LOGGED_USER_KEY, OFFLINE_DATA_KEY, OFFLINE_DATA_START_TASK_ISTANCE, OFFLINE_DATA_ADD_FATIGUE_ISTANCE, OFFLINE_DATA_END_TASK_ISTANCE} = Constants;
+const { 
+    LOGGED_USER_KEY, OFFLINE_DATA_KEY, 
+    OFFLINE_DATA_START_TASK_ISTANCE, 
+    OFFLINE_DATA_ADD_FATIGUE_ISTANCE, 
+    OFFLINE_DATA_END_TASK_ISTANCE,
+    OFFLINE_GROUP_TASKS_KEY,
+    OFFLINE_USERS_KEY,
+} = Constants;
 
 // Save data to async storage
 // save everithing in array, the last operation is the last element of the array
@@ -66,6 +79,7 @@ export const saveStartTask = async (currentActivity, sentToServer) => {
         console.log(dataParsed);
         await AsyncStorage.setItem(OFFLINE_DATA_KEY, JSON.stringify(dataParsed));
     } catch (error) {
+        console.log("error while saving start task in local storage");
         console.log(error);
     }
 }
@@ -93,6 +107,7 @@ export const saveAddFatigue = async (fatigue, currentActivity, comment, sentToSe
         console.log(dataParsed);
         await AsyncStorage.setItem(OFFLINE_DATA_KEY, JSON.stringify(dataParsed));
     } catch (error) {
+        console.log("error while saving add fatigue in local storage");
         console.log(error);
     }
 }
@@ -118,6 +133,7 @@ export const saveEndTask = async (currentActivity, sentToServer) => {
         console.log(dataParsed);
         await AsyncStorage.setItem(OFFLINE_DATA_KEY, JSON.stringify(dataParsed));
     } catch (error) {
+        console.log("error while saving end task in local storage");
         console.log(error);
     }
 }
@@ -190,6 +206,7 @@ export const saveSurveyData = async (fatigue, currentActivity, comment, sentToSe
         console.log(dataParsed);
         await AsyncStorage.setItem(OFFLINE_DATA_KEY, JSON.stringify(dataParsed));
     } catch (error) {
+        console.log("error while save survey data");
         console.log(error);
     }
 }
@@ -203,6 +220,7 @@ export const getData = async () => {
         const dataParsed = JSON.parse(data);
         return dataParsed;
     } catch (error) {
+        console.log("error while get local data");
         console.log(error);
     }
 }
@@ -249,6 +267,7 @@ export const sendData = async () => {
 
         await AsyncStorage.setItem(OFFLINE_DATA_KEY, JSON.stringify(newData));
     } catch (error) {
+        console.log("error whule sending data to server");
         console.log(error);
     }
 }
@@ -279,10 +298,64 @@ export const getCurrentActivity = async () => {
         // if there is a start task and there is not an end task, return the current activity
         return start && !end ? start.startTask.currentActivity : null;
     } catch (error) {
+        console.log("error while getting current activity");
         console.log(error);
     }
 }
 
+// init data for offline mode
+export const initOfflineData = async () => {
+    try {
+        const groupTask =  await getGroupTasks();
+        await AsyncStorage.setItem(OFFLINE_GROUP_TASKS_KEY, JSON.stringify(groupTask));
+
+
+        const users = await fetchUsers();
+        await AsyncStorage.setItem(OFFLINE_USERS_KEY, JSON.stringify(users));
+    } catch (error) {
+        console.log("Error while init offline data");
+        console.log(error);
+    }
+}
+
+// get group tasks
+export const getOfflineGroupTasks = async () => {
+    try {
+        const getGroupTasks = await AsyncStorage.getItem(OFFLINE_GROUP_TASKS_KEY);
+        const groupTasksParsed = JSON.parse(getGroupTasks);
+
+        return groupTasksParsed ? groupTasksParsed.tasks : [];
+    } catch (error) {
+        console.log("error while get group tasks");
+        console.log(error);
+    }
+}
+
+// get group tasks by group 
+export const getOfflineGroupTasksByGroup = async (group) => {
+    try {
+        const getGroupTasks = await AsyncStorage.getItem(OFFLINE_GROUP_TASKS_KEY);
+        const groupTasksParsed = JSON.parse(getGroupTasks);
+
+        return groupTasksParsed ? groupTasksParsed.tasks.filter(task => task.group === group) : [];
+    } catch (error) {
+        console.log("error while get group tasks");
+        console.log(error);
+    }
+}
+
+// get users
+export const getOfflineUsers = async () => {
+    try {
+        const getUsers = await AsyncStorage.getItem(OFFLINE_USERS_KEY);
+        const usersParsed = JSON.parse(getUsers);
+
+        return usersParsed ? usersParsed.users : [];
+    } catch (error) {
+        console.log("error while get users");
+        console.log(error);
+    }
+}
 
 
 // create method to save survay ==> saveSurvey(idUser, fatigue, currentActivity, comment, sentToServer)

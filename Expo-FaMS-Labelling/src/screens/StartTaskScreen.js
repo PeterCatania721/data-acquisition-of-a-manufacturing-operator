@@ -6,8 +6,8 @@ import { BlurView } from 'expo-blur';
 // Internal imports
 import ConfirmationModal from '../components/modals/ConfirmationModal';
 import { getTaskByGroup, startTask } from '../utils/requestManager';
-import { UserContext } from '../contexts.js';
-import { saveStartTask } from '../utils/localStorage';
+import { UserContext, ConnectionContext } from '../contexts.js';
+import { saveStartTask, getOfflineGroupTasksByGroup} from '../utils/localStorage';
 
 
 const styles = StyleSheet.create({
@@ -84,6 +84,7 @@ function NextTaskListItem({ item, index, onTaskPress}){
 
 function StartTaskScreen({ navigation}) {
   const {userId} = useContext(UserContext);
+  const {isConnected} = useContext(ConnectionContext);
 
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
   const [clickedItemId, setClickedItemId] = useState('');
@@ -91,12 +92,21 @@ function StartTaskScreen({ navigation}) {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    getTaskByGroup('Manufacturer Operator')
-      .then((tasks) => {
-        setTasks(tasks);
-        setClickedItemId(tasks[0]._id);
-      })
-      .catch((error) => console.log(error));
+    if (isConnected) {
+      getTaskByGroup('Manufacturer Operator')
+        .then((tasks) => {
+          setTasks(tasks);
+          setClickedItemId(tasks[0]._id);
+        })
+        .catch((error) => console.log(error));
+    } else {
+      getOfflineGroupTasksByGroup('Manufacturer Operator')
+        .then((tasks) => {
+            setTasks(tasks);
+            setClickedItemId(tasks[0]._id);
+        })
+        .catch((error) => console.log(error));
+    }
   }, [navigation]);
 
   function handleTaskPress(item){
@@ -108,14 +118,20 @@ function StartTaskScreen({ navigation}) {
     setConfirmationModalVisible(false);
     const currentTask = tasks.find((task) => task._id === clickedItemId).nameTask;
 
-    startTask(userId, currentTask)
-      .then((response) => {
-        navigation.navigate('Home', {userId: userId});
-      })
-      .catch((error) => console.log(error));
+    if(isConnected) {
+      startTask(userId, currentTask)
+        .then((response) => {
+          navigation.navigate('Home');
+        })
+        .catch((error) => console.log(error));
+    }
 
-    saveStartTask(currentTask, true)
-      .then(() => console.log('Task saved'))
+    saveStartTask(currentTask, isConnected)
+      .then(() => {
+        if (!isConnected) {
+          navigation.navigate('Home');
+        }
+      })
       .catch((error) => console.log(error));
   }
 

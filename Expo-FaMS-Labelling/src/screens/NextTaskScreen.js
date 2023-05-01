@@ -8,6 +8,7 @@ import Accordion from 'react-native-collapsible/Accordion';
 import ConfirmationModal from '../components/modals/ConfirmationModal';
 import { addSurvey } from '../utils/requestManager';
 import { UserContext } from '../contexts.js';
+import { ConnectionContext } from '../contexts.js';
 import { saveSurveyData } from '../utils/localStorage';
 
 
@@ -86,6 +87,7 @@ function NextTaskListItem({ item, index, onTaskPress}){
 function NextTaskScreen({ navigation, route}) {
   const { fatigue, optionalComment} = route.params;
   const { userId } = useContext(UserContext);
+  const { isConnected } = useContext(ConnectionContext);
 
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
   const [clickedItemId, setClickedItemId] = useState(1);
@@ -119,14 +121,22 @@ function NextTaskScreen({ navigation, route}) {
     setConfirmationModalVisible(false);
     setSubmitUnexpectedActivity(false);
 
-    console.log('task name: ', taskName);
-    saveSurveyData(fatigue, taskName, optionalComment, true);
+    if(isConnected){
+      // wait for addSuvrey to finish, before navigating to Home
+      addSurvey(userId, fatigue, taskName, optionalComment)
+        .then(() => {
+          navigation.navigate('Home')
+        });
+    }
 
-    // wait for addSuvrey to finish, before navigating to Home
-    addSurvey(userId, fatigue, taskName, optionalComment)
+    // save survey data locally
+    saveSurveyData(fatigue, taskName, optionalComment, isConnected)
       .then(() => {
-        navigation.navigate('Home')
+        if(isConnected){
+          navigation.navigate('Home');
+        }
       });
+
   }
 
   function handleModalCancel(){

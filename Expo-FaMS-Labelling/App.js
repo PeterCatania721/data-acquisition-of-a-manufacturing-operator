@@ -6,7 +6,7 @@ import NetInfo from '@react-native-community/netinfo';
 // Internal imports
 import HomeNavigation from './src/navigation/HomeNavigation';
 import { UserContext, ConnectionContext } from './src/contexts';
-
+import { initOfflineData } from './src/utils/localStorage';
 
 export default function App() {
   const [userId, setUserId] = useState(null);
@@ -17,6 +17,9 @@ export default function App() {
     Notifications.requestPermissionsAsync().then((status) => {
       //console.log('Permission status:', status);
     });
+
+    // init offline data
+    initOfflineData();
 
     // Get if the user is connected to the internet
     const unsubscribe = NetInfo.addEventListener(state => {
