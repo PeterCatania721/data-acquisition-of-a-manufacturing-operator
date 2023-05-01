@@ -18,9 +18,6 @@ export default function App() {
       //console.log('Permission status:', status);
     });
 
-    // init offline data
-    initOfflineData();
-
     // Get if the user is connected to the internet
     const unsubscribe = NetInfo.addEventListener(state => {
         //console.log("Connection type", state.type);
@@ -30,6 +27,13 @@ export default function App() {
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    // init offline data
+    if (isConnected)
+      initOfflineData();
+      
+  }, [isConnected]);
 
   return (
     <UserContext.Provider value={{userId, setUserId}}>

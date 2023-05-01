@@ -36,26 +36,45 @@ function LoginPage ({ navigation }) {
       // Screen was agin  focused do something
       AsyncStorage.removeItem(LOGGED_USER_KEY);
       setUserId(null);
+
+      if (isConnected) {
+        fetchUsers()
+          .then(users => {
+            setItems(users);
+          })
+          .catch(err => {
+            console.log("Error during fetch users: ", err);
+          });
+      } else {
+        getOfflineUsers()
+          .then(users => {
+            setItems(users);
+          })
+          .catch(err => {
+            console.log("Error during get offline users: ", err);
+          });
+      }
     });
 
     return logout;
-  }, [navigation]);
+  }, [navigation, isConnected]);
 
   // on mount, get users from db
   useEffect(() => {
     // get logged user from async storage
     AsyncStorage.getItem(LOGGED_USER_KEY)
-    .then(res => {
-      if (res !== null) {
-        setUserId(res);
-      }
-    })
+      .then(res => {
+        if (res !== null) {
+          setUserId(res);
+        }
+      })
+
   }, []);
 
   // when logged user is changed, save it in async storage
   // ang go to home screen
   useEffect( () => {
-    if (userId !== null && userId !== undefined) {
+    if (userId) {
       AsyncStorage.setItem(LOGGED_USER_KEY, userId);
       navigation.navigate('Home');
     }
@@ -112,7 +131,7 @@ function LoginPage ({ navigation }) {
 
         <Text style={styles.title}>Scegli il tuo ID</Text>
 
-        {(errorInvalidID !== null || !isConnected) && <Text style={styles.errorMsg}>{isConnected ? errorInvalidID: "Verifica la Connessione prima di procedere"}</Text> }
+        {(errorInvalidID !== null ) && <Text style={styles.errorMsg}>{errorInvalidID}</Text> }
 
         <DropDownPicker
           zIndex={1000}
@@ -150,7 +169,7 @@ function LoginPage ({ navigation }) {
           <TouchableOpacity 
             style={[styles.button, errorInvalidID !== null && styles.disabledButton]} 
             onPress={handleLogin}
-            disabled={!isConnected || errorInvalidID !== null}
+            disabled={errorInvalidID !== null}
           >
             <Text style={styles.buttonText}>Accedi</Text>
           </TouchableOpacity>

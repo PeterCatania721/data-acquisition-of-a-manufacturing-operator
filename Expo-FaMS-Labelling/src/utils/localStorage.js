@@ -348,9 +348,9 @@ export const getOfflineGroupTasksByGroup = async (group) => {
 export const getOfflineUsers = async () => {
     try {
         const getUsers = await AsyncStorage.getItem(OFFLINE_USERS_KEY);
-        const usersParsed = JSON.parse(getUsers);
+        const usersParsed = await JSON.parse(getUsers);
 
-        return usersParsed ? usersParsed.users : [];
+        return usersParsed;
     } catch (error) {
         console.log("error while get users");
         console.log(error);
