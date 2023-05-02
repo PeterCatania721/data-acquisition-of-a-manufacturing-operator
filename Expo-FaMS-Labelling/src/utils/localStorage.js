@@ -3,12 +3,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Intrenal imports
 import Constants from './constants';
-import { 
-    startTask, 
-    addFatigue, 
-    closeTask,
+import {
     fetchUsers,
     getGroupTasks, 
+    uploadStartTask,
+    uploadAddFatigue,
+    uploadEndTask,
+    uploadFatigue,
 } from "./requestManager";
 
 // Global variables
@@ -232,7 +233,7 @@ export const sendData = async () => {
     try {
         const data = await AsyncStorage.getItem(OFFLINE_DATA_KEY);
         const dataParsed = JSON.parse(data);
-        let newData = dataParsed;
+        let newData;
 
         if (!dataParsed)
             return;
@@ -240,28 +241,24 @@ export const sendData = async () => {
         dataParsed.forEach(async item => {
             if (item.startTask && item.startTask.sendedToServer === false) {
 
-                await startTask(item.startTask.idUser, item.startTask.currentActivity, item.startTask.startedAt);
+                await uploadStartTask(item.startTask.idUser, item.startTask.currentActivity, item.startTask.startedAt);
                 item.startTask.sendedToServer = true;
+                newData.push(item);
 
             } else if (item.addFatigue && item.addFatigue.sendedToServer === false) {
 
-                await addFatigue(item.addFatigue.idUser, item.addFatigue.fatigue, item.addFatigue.currentActivity, item.addFatigue.comment, item.addFatigue.createdAt);
+                await uploadFatigue(item.addFatigue.idUser, item.addFatigue.fatigue, item.addFatigue.comment, item.addFatigue.createdAt, item.addFatigue.currentActivity);
                 item.addFatigue.sendedToServer = true;
+                newData.push(item);
 
             } else if (item.endTask && item.endTask.sendedToServer === false) {
 
-                await endTask(item.endTask.idUser);
-
+                await uploadEndTask(item.endTask.idUser, item.endTask.currentActivity, item.endTask.endedAt);
+                item.endTask.sendedToServer = true;
+                newData.push(item);
+                
                 // delete all data saved of the user that ended the task
-                newData = newData.filter(i => {
-                    if(i.startTask && i.startTask.idUser === item.endTask.idUser) {
-                        return false;
-                    } else if (i.addFatigue && i.addFatigue.idUser === item.endTask.idUser) {
-                        return false;
-                    }
-
-                    return true;
-                });
+                newData = newData.filter(item => item.endTask.idUser !== item.endTask.idUser);
             }
         });
 

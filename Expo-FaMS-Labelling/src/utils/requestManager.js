@@ -245,3 +245,86 @@ export const getGroupTasks = async () => {
         }
     }
 }
+
+export const uploadStartTask = async (userId, currentActivity, startedAt) => {
+    try {
+        let response = await axios.post(
+            `${API_BASE_URL}${userId}/uploadStartTask`,
+            {
+                currentActivity: currentActivity,
+                startedAt: startedAt,
+            }
+        );
+
+        if (response.status !== 200 && response.status !== 201) {
+            throw new Error("Failed to fetch users");
+        }
+
+        let data = await response.data;
+
+        return data;
+    } catch (err) {
+        if(axios.isCancel(err)){
+            console.log('Data fetching cancelled');
+        }else{
+            console.log("Error while uploading start task");
+            console.log(err);
+        }
+    }
+}
+
+export const uploadFatigue = async (userId, fatigue, comment, createdAt, currentActivity) => {
+    try {
+        let response = await axios.post(
+            `${API_BASE_URL}${userId}/uploadFatigue`,
+            {
+                fatigue: fatigue,
+                comment: comment,
+                createdAt: createdAt,
+                currentActivity: currentActivity,
+            }
+        );
+    
+        if (response.status !== 200 && response.status !== 201) {
+            throw new Error("Failed to fetch users");
+        }
+
+        let data = await response.data;
+
+        return data;
+    } catch (err) {
+        if(axios.isCancel(err)){
+            console.log('Data fetching cancelled');
+        }else{
+            console.log("Error while uploading fatigue");
+            console.log(err);
+        }
+    }
+}
+
+export const uploadEndTask = async (userId, finishedAt, currentActivity) => {
+    try {
+        let response = await axios.post(
+            `${API_BASE_URL}${userId}/uploadEndTask`,
+            {
+                finishedAt: finishedAt,
+                currentActivity: currentActivity,
+            }
+        );
+    
+        if (response.status !== 200 && response.status !== 201) {
+            throw new Error("Failed to fetch users");
+        }
+
+        let data = await response.data;
+
+        return data;
+    } catch (err) {
+        if(axios.isCancel(err)){
+            console.log('Data fetching cancelled');
+        }else{
+            console.log("Error while uploading end task");
+            console.log(err);
+        }
+    }
+}

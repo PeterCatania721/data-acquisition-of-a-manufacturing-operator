@@ -30,7 +30,6 @@ function HomeScreen({ navigation}) {
             if(isConnected){
                 getTasksInProgress(userId)
                     .then(tasks => {
-                        console.log("tasks: ", tasks);
                         if (tasks.length > 0) {
                             setCurrentTask(tasks[0].nameTask);
                         }
@@ -42,7 +41,6 @@ function HomeScreen({ navigation}) {
             } else {
                 getCurrentActivity()
                     .then(currentTask => {            
-                        console.log("currentTask: ", currentTask);            
                         setCurrentTask(currentTask == null ? "Nessuna" : currentTask);
                     })  
                     .catch(err => {
@@ -59,7 +57,6 @@ function HomeScreen({ navigation}) {
         if(isConnected){
             getTasksInProgress(userId)
                 .then(tasks => {
-                    console.log("tasks: ", tasks);
                     if (tasks.length > 0) {
                         setCurrentTask(tasks[0].nameTask);
                     }
@@ -70,8 +67,7 @@ function HomeScreen({ navigation}) {
 
         } else {
             getCurrentActivity()
-                .then(currentTask => {            
-                    console.log("currentTask: ", currentTask);            
+                .then(currentTask => {                   
                     setCurrentTask(currentTask == null ? "Nessuna" : currentTask);
                 })  
                 .catch(err => {

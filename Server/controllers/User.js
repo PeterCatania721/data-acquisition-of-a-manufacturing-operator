@@ -7,7 +7,8 @@ import { Task } from "../model/taskModel.js";
 import { Fatigue } from "../model/fatigueModel.js";
 import { TaskModel } from "../model/taskSchemaModel.js";
 
-export const allUser = async (req, res) => {
+// get all users
+export const getAllUser = async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json({ users });
@@ -17,22 +18,12 @@ export const allUser = async (req, res) => {
   
 };
 
-export const createUserById = async (req, res) => {
-  const id = req.params.id;
-
-  try {
-    const user = await User.find({idUser : id});
-    res.status(200).json({ user });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-export const create = async (req, res) => {
+// create new user
+export const createUser = async (req, res) => {
   try {
 
     const id = req.body.idUser;
-    if (id != null && await checkExistUser(id)) {
+    if (id != null && await userExists(id)) {
       res.status(200).json({ success: true, message: "User already exist", user: {idUser: id}});
       return;
     }
@@ -52,9 +43,8 @@ export const create = async (req, res) => {
   }
 };
 
-
 // check if user exist in database
-async function checkExistUser(id) {
+async function userExists(id) {
   const users = await User.find({idUser : id});
 
   if(users.length === 0){
@@ -64,8 +54,8 @@ async function checkExistUser(id) {
   }
 }
 
-// getTaskByGroup 
-export const getTaskByGroup = async (req, res) => {
+// get task by group
+export const getTasksByGroup = async (req, res) => {
   const group = req.params.group;
 
   try {
@@ -77,6 +67,7 @@ export const getTaskByGroup = async (req, res) => {
   }
 }
 
+// get all tasks that are associated to a group
 export const getGroupTasks = async (req, res) => {
   try {
     const tasks = await TaskModel.find();
@@ -87,6 +78,7 @@ export const getGroupTasks = async (req, res) => {
   }
 }
 
+// add a new task to a group
 export const addGroupTask = async (req, res) => {
 
   const {nameTask,group} = req.body;
@@ -105,11 +97,12 @@ export const addGroupTask = async (req, res) => {
 
 };
 
-export const fatigue = async (req, res) => {
+// create a new fatigue associated to a user and task
+export const createFatigue = async (req, res) => {
 
   const id = req.params.id;
 
-  const userExist = await checkExistUser(id);
+  const userExist = await userExists(id);
 
   console.log(userExist);
 
@@ -139,13 +132,20 @@ export const fatigue = async (req, res) => {
   }
 };
 
-/**
- * 
- * get all  user
- * 
-  */
+// get all fatigue records
+export const getFatigue = async (req, res) => {
+  
+  try {
+    const fatigue = await Fatigue.find();
 
-export const getAll = async (req, res) => {
+    res.status(200).json({ success: true, fatigue});
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// get all users 
+export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json({ success: true, users });
@@ -155,13 +155,12 @@ export const getAll = async (req, res) => {
   
 };
 
+// start a task
 export const startTask = async (req, res) => {
 
   const id = req.params.id;
 
-  const userExist = await checkExistUser(id);
-
-  console.log(userExist);
+  const userExist = await userExists(id);
 
   if(!userExist){
     res.status(400).json({ success: false, message: "User not exist" });
@@ -184,11 +183,12 @@ export const startTask = async (req, res) => {
 
 };
 
+// finish a task
 export const finishTask = async (req, res) => {
 
   const id = req.params.id;
 
-  const userExist = await checkExistUser(id);
+  const userExist = await userExists(id);
 
   console.log(userExist);
 
@@ -206,11 +206,11 @@ export const finishTask = async (req, res) => {
 }
 
 //get all task by user
-export const getAllTask = async (req, res) => {
+export const getAllTasks = async (req, res) => {
 
   const id = req.params.id;
 
-  const userExist = await checkExistUser(id);
+  const userExist = await userExists(id);
 
   console.log(userExist);
 
@@ -225,9 +225,10 @@ export const getAllTask = async (req, res) => {
 
 }
 
-export const getTaskInProgress = async (req, res) => {
+// get all tasks that are in progress
+export const getTasksInProgress = async (req, res) => {
   const id = req.params.id;
-  const userExist = await checkExistUser(id);
+  const userExist = await userExists(id);
 
   if(!userExist){
     res.status(400).json({ success: false, message: "User not exist" });
@@ -239,3 +240,85 @@ export const getTaskInProgress = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// upload start task already done
+export const uploadStartTask = async (req, res) => {
+  const id = req.params.id;
+
+  const userExist = await userExists(id);
+
+  if(!userExist){
+    res.status(400).json({ success: false, message: "User not exist" });
+    return;
+  }
+
+  const { 
+    currentActivity,
+    startedAt,
+  } = req.body;
+
+  let task  = await Task.create({
+    idUser: id,
+    nameTask: currentActivity,
+    startAt: startedAt,
+    status: "IN_PROGRESS",
+  });
+
+  await task.save();
+
+  res.status(201).json({ success: true,task:  task });
+}
+
+// upload fatigue operation already done
+export const uploadFatigue = async (req, res) => {
+  const id = req.params.id;
+
+  const userExist = await userExists(id);
+
+  console.log(userExist);
+
+  if(!userExist){
+    res.status(400).json({ success: false, message: "User not exist" });
+    return;
+  }
+
+  const { 
+    fatigue,
+    comment,
+    createdAt,
+    currentActivity,
+  } = req.body;
+
+  let fat  = await Fatigue.create({
+    idUser: id,
+    fatigue: fatigue,
+    comment: comment,
+    task: currentActivity,
+    createdAt: createdAt,
+  });
+
+  await fat.save();
+
+  res.status(201).json({ success: true,fatigue:  fat });
+}
+
+// upload finish task operation already done
+export const uploadFinishTask = async (req, res) => {
+  const id = req.params.id;
+
+  const userExist = await userExists(id);
+
+  if(!userExist){
+    res.status(400).json({ success: false, message: "User not exist" });
+    return;
+  }
+
+  const {
+    finishedAt,
+  } = req.body;
+
+  //update task
+  await Task.findOneAndUpdate({idUser: id,status: "IN_PROGRESS"},{status: "DONE",finishAt: finishedAt});
+
+  res.status(200).json({ success: true, message: "Task update" });
+}
