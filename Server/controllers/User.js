@@ -5,7 +5,7 @@ import { randomUUID } from "crypto";
 import { User } from "../model/userModel.js";
 import { Task } from "../model/taskModel.js";
 import { Fatigue } from "../model/fatigueModel.js";
-import { TaskModel } from "../model/taskSchemaModel.js";
+import { TaskGroup } from "../model/taskSchemaModel.js";
 
 // get all users
 export const getAllUser = async (req, res) => {
@@ -59,7 +59,7 @@ export const getTasksByGroup = async (req, res) => {
   const group = req.params.group;
 
   try {
-    const tasks = await TaskModel.find({group: group});
+    const tasks = await TaskGroup.find({group: group});
 
     res.status(200).json({ tasks });
   } catch (error) {
@@ -70,7 +70,7 @@ export const getTasksByGroup = async (req, res) => {
 // get all tasks that are associated to a group
 export const getGroupTasks = async (req, res) => {
   try {
-    const tasks = await TaskModel.find();
+    const tasks = await TaskGroup.find();
 
     res.status(200).json({ tasks });
   } catch (error) {
@@ -83,7 +83,7 @@ export const addGroupTask = async (req, res) => {
 
   const {nameTask,group} = req.body;
 
-  let tasks = await TaskModel.create({
+  let tasks = await TaskGroup.create({
 
     nameTask: nameTask,
     group: group,

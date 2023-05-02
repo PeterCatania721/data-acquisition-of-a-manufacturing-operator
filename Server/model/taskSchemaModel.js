@@ -10,4 +10,4 @@ const taskSchema = new mongoose.Schema({
   },
 }, { versionKey: false });
 
-export const TaskModel = mongoose.model("tasksGroup", taskSchema);
+export const TaskGroup = mongoose.model("tasksGroup", taskSchema);

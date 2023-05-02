@@ -88,7 +88,7 @@ function HomeNavigation() {
 const styles = StyleSheet.create({
     headerTitle: {
         color: 'black',
-        fontSize: normalize(23, SCREEN_WIDTH),
+        fontSize: normalize(10, SCREEN_HEIGHT),
     },
 });
 

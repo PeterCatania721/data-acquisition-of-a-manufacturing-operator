@@ -150,18 +150,31 @@ function LoginPage ({ navigation }) {
           setItems={setItems}
           placeholder='Iserisci il tuo ID'
           searchPlaceholder='Il tuo ID...'
-          textStyle={ { fontSize: normalize(20, SCREEN_WIDTH)} }
+          textStyle={ { fontSize: normalize(18, SCREEN_HEIGHT)} }
           mode="SIMPLE"
-          listMode="SCROLLVIEW"
+          listMode="FLATLIST"
+          //dropDownComponent={FlatList}
+          
+
+          scrollViewProps={{
+            nestedScrollEnabled: true,
+            showsVerticalScrollIndicator: true,
+            showsHorizontalScrollIndicator: true,
+            persistentScrollbar: true,
+            decelerationRate: "fast",
+            scrollEnabled: true,
+            automaticallyAdjustsScrollIndicatorInsets: true,
+            contentContainerStyle: { flexGrow: 1, justifyContent: 'center', zIndex: 1000},
+          }}
 
           labelStyle={[errorInvalidID !== null && styles.invalidId]}
           labelContainerStyle={ errorInvalidID !== null && styles.invalidId }
-
-
           placeholderStyle={ errorInvalidID !== null && styles.invalidId }
+          DropDownPicker={styles.IdDropdownPicker}
 
           selectedItemLabelStyle={{ fontWeight: "bold"}}
           listItemLabelStyle={styles.idItemLabel}
+          listItemContainerStyle={styles.idItemContainer}
           itemSeparator={true}
         />
 
@@ -206,16 +219,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 32,
   },
-  input: {
-    width: '80%',
-    height: 40,
-    borderWidth: 1,
-    borderColor: 'gray',
-    marginBottom: 16,
-    padding: 8,
-  },
   buttonContainer: {
-    zIndex: -1,
+    zIndex: -100,
     width: '100%',
     height: '20%',
     justifyContent: 'center',
@@ -240,18 +245,24 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: normalize(40, SCREEN_WIDTH),
+    fontSize: normalize(30, SCREEN_HEIGHT),
   },
   buttonTextRegister: {
     color: 'blue',
   },
   IdDropdown: {
-    width: '100%',
+    zIndex: 1000,
+  },
+  IdDropdownPicker: {
+    zIndex: 1000,
   },
   idItemLabel: {
-    fontSize: normalize(25, SCREEN_WIDTH),
-    paddingVertical: 2,
-    height: 50,
+    fontSize: normalize(16, SCREEN_HEIGHT),
+  },
+  idItemContainer: {
+    height: SCREEN_HEIGHT * 0.08,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   invalidId: {
     borderColor: "rgba(255, 0, 0, 0.5)",
@@ -264,11 +275,10 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     alignItems: 'center',
-    //justifyContent: 'top',
     width: '100%',
   },
   topTextLabel: {
-    fontSize: normalize(12, SCREEN_WIDTH),
+    fontSize: normalize(12, SCREEN_HEIGHT),
     textAlign: 'left',
     marginTop: 5,
   },

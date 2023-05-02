@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { User } from "../model/userModel.js";
 import { Task } from "../model/taskModel.js";
 import { Fatigue } from "../model/fatigueModel.js";
-import { TaskModel } from "../model/taskSchemaModel.js";
+import { TaskGroup } from "../model/taskSchemaModel.js";
 
 export const connectDatabase = async () => {
   try {
@@ -20,7 +20,7 @@ export const emptyDatabase = async () => {
     //await User.deleteMany({});
     //await Task.deleteMany({});
     //await Fatigue.deleteMany({});
-    await TaskModel.deleteMany({});
+    await TaskGroup.deleteMany({});
   } catch (error) {
     console.log(error);
   }
@@ -42,9 +42,9 @@ export const insertData = async () => {
     // create new document for each task, and save it to the database
     let tasks = [];
     for (const task of manufacturerOperatorTasks) {
-      tasks.push(new TaskModel(task));
+      tasks.push(new TaskGroup(task));
     }
-    await TaskModel.insertMany(tasks);
+    await TaskGroup.insertMany(tasks);
 
   } catch (error) {
     console.log(error);
