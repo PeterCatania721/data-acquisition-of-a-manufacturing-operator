@@ -6,7 +6,7 @@ import NetInfo from '@react-native-community/netinfo';
 // Internal imports
 import HomeNavigation from './src/navigation/HomeNavigation';
 import { UserContext, ConnectionContext } from './src/contexts';
-import { initOfflineData } from './src/utils/localStorage';
+import { initOfflineData, sendData } from './src/utils/localStorage';
 
 export default function App() {
   const [userId, setUserId] = useState(null);
@@ -28,11 +28,20 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
+  useEffect( () => {
     // init offline data
-    if (isConnected)
-      initOfflineData();
+    if (isConnected) {
+      const fetchData = async () => {
+        await initOfflineData();
+        await sendData();
+      }
       
+      fetchData()
+        .catch(err => {
+          console.log("Error during init offline data: \n", err);
+        });
+    }
+    
   }, [isConnected]);
 
   return (

@@ -230,17 +230,17 @@ export const getData = async () => {
 // if the data is sent to the server and the task is ended, delete the data from the array
 // otherwise, if the data is sent to the server and the task is not ended, set sentToServer to true
 export const sendData = async () => {
+    console.log("send data");
     try {
         const data = await AsyncStorage.getItem(OFFLINE_DATA_KEY);
         const dataParsed = JSON.parse(data);
-        let newData;
+        let newData = [];
 
         if (!dataParsed)
             return;
 
         dataParsed.forEach(async item => {
             if (item.startTask && item.startTask.sendedToServer === false) {
-
                 await uploadStartTask(item.startTask.idUser, item.startTask.currentActivity, item.startTask.startedAt);
                 item.startTask.sendedToServer = true;
                 newData.push(item);
@@ -262,6 +262,7 @@ export const sendData = async () => {
             }
         });
 
+        console.log("new data: ", newData);
         await AsyncStorage.setItem(OFFLINE_DATA_KEY, JSON.stringify(newData));
     } catch (error) {
         console.log("error whule sending data to server");
@@ -292,7 +293,7 @@ export const getCurrentActivity = async () => {
             }
         }
 
-        console.log("start", start && !end ? "true" : "false", "\n" + start,"\n" + end, "\n" , dataParsed);
+       //console.log("start", start && !end ? "true" : "false", "\n" + start,"\n" + end, "\n" , dataParsed);
         // if there is a start task and there is not an end task, return the current activity
         return start && !end ? start.startTask.currentActivity : null;
     } catch (error) {
