@@ -308,9 +308,10 @@ export const initOfflineData = async () => {
         const groupTask =  await getGroupTasks();
         await AsyncStorage.setItem(OFFLINE_GROUP_TASKS_KEY, JSON.stringify(groupTask));
 
-
         const users = await fetchUsers();
         await AsyncStorage.setItem(OFFLINE_USERS_KEY, JSON.stringify(users));
+
+        console.log("init offline data");
     } catch (error) {
         console.log("Error while init offline data");
         console.log(error);
@@ -332,6 +333,9 @@ export const getOfflineGroupTasks = async () => {
 
 // get group tasks by group 
 export const getOfflineGroupTasksByGroup = async (group) => {
+    if(gorup === null || group === undefined)
+        return [];
+
     try {
         const getGroupTasks = await AsyncStorage.getItem(OFFLINE_GROUP_TASKS_KEY);
         const groupTasksParsed = JSON.parse(getGroupTasks);

@@ -32,13 +32,28 @@ export default function App() {
     // init offline data
     if (isConnected) {
       const fetchData = async () => {
-        await initOfflineData();
-        await sendData();
+
+        const initDataPromise = initOfflineData()
+          .catch(err => {
+            console.log("Error during init offline data: \n", err);
+            setIsConnected(false);
+          });
+
+        const sendDataPromise = sendData()
+          .catch(err => {
+            console.log("Error during sending data: \n", err);
+            setIsConnected(false);
+          });
+
+        await Promise
+          .race([ initDataPromise, sendDataPromise])
+          .then(json => console.log('fetch delivered to server'))
+          .catch(err => console.error('Cannot connect to server'))
       }
       
       fetchData()
         .catch(err => {
-          console.log("Error during init offline data: \n", err);
+          console.log("Error during fetchind data: \n", err);
         });
     }
     
