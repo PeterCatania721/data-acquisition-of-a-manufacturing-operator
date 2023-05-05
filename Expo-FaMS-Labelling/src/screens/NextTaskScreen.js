@@ -94,6 +94,25 @@ function NextTaskScreen({ navigation, route}) {
   const [submitUnexpectedActivity, setSubmitUnexpectedActivity] = useState(false);
   const [newUnexpectedActivity, setNewUnexpectedActivity] = useState('');
 
+  useEffect(() => {
+    if (isConnected) {
+      getTaskByGroup('Manufacturer Operator')
+        .then((tasks) => {
+          console.log('tasks: ', tasks);
+          setTasks(tasks);
+          setClickedItemId(tasks[0]._id);
+        })
+        .catch((error) => console.log("error"));
+    } else {
+      getOfflineGroupTasksByGroup('Manufacturer Operator')
+        .then((tasks) => {
+            setTasks(tasks);
+            setClickedItemId(tasks[0]._id);
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [navigation]);
+
   const data = [
       { id: 1, title: 'pulire filtro dell\'aria della ventilazione nord' },
       { id: 2, title: 'produzione cushinetti 250mm' },
