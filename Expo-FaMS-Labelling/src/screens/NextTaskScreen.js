@@ -240,10 +240,10 @@ function NextTaskScreen({ navigation, route}) {
       alignSelf: 'center',
       marginEnd: 10,
       marginStart: 10,
-
     },
     flatList: {
         backgroundColor: 'transparent',
+        marginTop: 10,
     },
     descriptionText: {
       fontSize: 30,
@@ -305,8 +305,11 @@ function NextTaskScreen({ navigation, route}) {
       backgroundColor: '#f2f2f2',
       padding: 10,
       borderRadius: 10,
+      borderColor: 'black',
+      borderWidth: 2,
       fontSize: 20,
-      textAlignVertical: 'top',
+      textAlignVertical: 'center',
+      alignContent: 'center',
     },
   });  
 
