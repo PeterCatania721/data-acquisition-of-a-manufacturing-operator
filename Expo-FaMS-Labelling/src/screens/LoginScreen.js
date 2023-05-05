@@ -28,13 +28,14 @@ function LoginPage ({ navigation }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([]);
-  const [errorInvalidID, setErrorInvalidId] = useState(null);
+  const [errorInvalidId, setErrorInvalidId] = useState(null);
   
   // when the screen is focused again, execute logout
   useEffect(() => {
     const logout = navigation.addListener('focus', () => {
-      // Screen was agin  focused do something
+      // Screen was again focused do something
       AsyncStorage.removeItem(LOGGED_USER_KEY);
+      console.log("Logout");
 
       if (isConnected) {
         fetchUsers()
@@ -59,9 +60,9 @@ function LoginPage ({ navigation }) {
     setErrorInvalidId(null);
 
     return logout;
-  }, [navigation, isConnected]);
+  }, [navigation]);
 
-  // on mount, get users from db
+  // on mount, get users from local storage
   useEffect(() => {
     // get logged user from async storage
     AsyncStorage.getItem(LOGGED_USER_KEY)
@@ -70,7 +71,6 @@ function LoginPage ({ navigation }) {
           setUserId(res);
         }
       })
-
   }, []);
 
   // when logged user is changed, save it in async storage
@@ -83,8 +83,8 @@ function LoginPage ({ navigation }) {
   }, [userId]);
 
   const handleLogin = () => {
-    if (value === null || errorInvalidID !== null) {
-      setErrorInvalidId(errorInvalidID === null ? "Seleziona un ID!" : errorInvalidID);
+    if (value === null || errorInvalidId) {
+      setErrorInvalidId(errorInvalidId ? errorInvalidId : "Seleziona un ID!");
       return;
     }
     setErrorInvalidId(null);
@@ -133,11 +133,11 @@ function LoginPage ({ navigation }) {
 
         <Text style={styles.title}>Scegli il tuo ID</Text>
 
-        {(errorInvalidID !== null ) && <Text style={styles.errorMsg}>{errorInvalidID}</Text> }
+        {(errorInvalidId !== null ) && <Text style={styles.errorMsg}>{errorInvalidId}</Text> }
 
         <DropDownPicker
           zIndex={1000}
-          style={[styles.IdDropdown, errorInvalidID !== null && styles.invalidId]}
+          style={[styles.IdDropdown, errorInvalidId !== null && styles.invalidId]}
           dropDownContainerStyle={[styles.IdDropdown]}
           language="IT"
           open={open}
@@ -169,9 +169,9 @@ function LoginPage ({ navigation }) {
             contentContainerStyle: { flexGrow: 1, justifyContent: 'center', zIndex: 1000},
           }}
 
-          labelStyle={[errorInvalidID !== null && styles.invalidId]}
-          labelContainerStyle={ errorInvalidID !== null && styles.invalidId }
-          placeholderStyle={ errorInvalidID !== null && styles.invalidId }
+          labelStyle={[errorInvalidId !== null && styles.invalidId]}
+          labelContainerStyle={ errorInvalidId !== null && styles.invalidId }
+          placeholderStyle={ errorInvalidId !== null && styles.invalidId }
           DropDownPicker={styles.IdDropdownPicker}
 
           selectedItemLabelStyle={{ fontWeight: "bold"}}
@@ -182,9 +182,9 @@ function LoginPage ({ navigation }) {
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity 
-            style={[styles.button, errorInvalidID !== null && styles.disabledButton]} 
+            style={[styles.button, errorInvalidId !== null && styles.disabledButton]} 
             onPress={handleLogin}
-            disabled={errorInvalidID !== null}
+            disabled={errorInvalidId !== null}
           >
             <Text style={styles.buttonText}>Accedi</Text>
           </TouchableOpacity>

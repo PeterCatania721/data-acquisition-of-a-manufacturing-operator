@@ -7,9 +7,8 @@ import {
     fetchUsers,
     getGroupTasks, 
     uploadStartTask,
-    uploadAddFatigue,
-    uploadEndTask,
     uploadFatigue,
+    uploadEndTask,
 } from "./requestManager";
 
 // Global variables
