@@ -309,7 +309,7 @@ function NextTaskScreen({ navigation, route}) {
       borderWidth: 2,
       fontSize: 20,
       textAlignVertical: 'center',
-      alignContent: 'center',
+      alignContent: 'center', 
     },
   });  
 
