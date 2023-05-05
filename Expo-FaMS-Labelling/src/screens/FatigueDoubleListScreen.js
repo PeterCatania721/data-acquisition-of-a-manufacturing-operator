@@ -38,7 +38,7 @@ function FatigueDoubleListScreen({ navigation}) {
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
   const [clickedFatigueKey, setClickedFatigueKey] = useState(0);
   const [optionaText, setOptionalText] = React.useState('');
-   
+  
   useEffect(() => {
 
     // Imposta un gestore per le notifiche ricevute dall'app

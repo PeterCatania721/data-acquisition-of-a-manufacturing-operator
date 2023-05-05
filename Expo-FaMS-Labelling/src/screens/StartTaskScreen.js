@@ -18,39 +18,6 @@ const styles = StyleSheet.create({
       marginVertical: 10,
       borderRadius: 10,
   },
-  formContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#9DC08B',
-    padding: 20,
-    marginVertical: 10,
-    borderRadius: 10,
-  },
-  firstButton: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#609966',
-      paddingHorizontal: 20,
-      marginVertical: 10,
-      borderRadius: 10,
-  },
-  firstButtonText: {
-      fontSize: 25,
-      color: '#000',
-      fontWeight: '800',
-      textAlign: 'center',
-      marginTop: '-25%',
-  },
-  firstButtonLabel: {
-    fontSize: 20,
-    color: 'rgba(0,0,0,0.8)',
-    fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: '50%',
-    textDecorationLine: 'underline',
-  },
   buttonText: {
       fontSize: 20,
       color: '#212',
@@ -60,8 +27,6 @@ const styles = StyleSheet.create({
 });
 
 function NextTaskListItem({ item, index, onTaskPress}){
-    const buttonStyle = index === 0 ? styles.firstButton : styles.button;
-    const buttonTextStyle = index === 0 ? styles.firstButtonText : styles.buttonText;
 
     // calculate the height of the first element
     const windowHeight = Dimensions.get('window').height;
@@ -71,10 +36,9 @@ function NextTaskListItem({ item, index, onTaskPress}){
       <View>
         <TouchableOpacity 
           onPress={onTaskPress}  
-          style={[buttonStyle, index === 0 && {height: elementHeight}]}>
+          style={[styles.button]}>
 
-          {index === 0 && <Text style={[buttonTextStyle, styles.firstButtonLabel]}>Attività Corrente</Text>}
-          <Text style={buttonTextStyle}>{item.nameTask}</Text>
+          <Text style={styles.buttonText}>{item.nameTask}</Text>
 
         </TouchableOpacity>
       </View>
@@ -94,10 +58,11 @@ function StartTaskScreen({ navigation}) {
     if (isConnected) {
       getTaskByGroup('Manufacturer Operator')
         .then((tasks) => {
+          console.log('tasks: ', tasks);
           setTasks(tasks);
           setClickedItemId(tasks[0]._id);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.log("error"));
     } else {
       getOfflineGroupTasksByGroup('Manufacturer Operator')
         .then((tasks) => {

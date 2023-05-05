@@ -35,7 +35,6 @@ function LoginPage ({ navigation }) {
     const logout = navigation.addListener('focus', () => {
       // Screen was agin  focused do something
       AsyncStorage.removeItem(LOGGED_USER_KEY);
-      setUserId(null);
 
       if (isConnected) {
         fetchUsers()
@@ -48,13 +47,16 @@ function LoginPage ({ navigation }) {
       } else {
         getOfflineUsers()
           .then(users => {
-            setItems(users);
+            setItems(users ? users : []);
           })
           .catch(err => {
             console.log("Error during get offline users: ", err);
           });
       }
     });
+
+    setUserId(null);
+    setErrorInvalidId(null);
 
     return logout;
   }, [navigation, isConnected]);

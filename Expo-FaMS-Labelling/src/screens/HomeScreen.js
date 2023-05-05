@@ -30,9 +30,7 @@ function HomeScreen({ navigation}) {
             if(isConnected){
                 getTasksInProgress(userId)
                     .then(tasks => {
-                        if (tasks.length > 0) {
-                            setCurrentTask(tasks[0].nameTask);
-                        }
+                        setCurrentTask( tasks !== undefined && tasks !== undefined && tasks.length > 0 ?  tasks[0].nameTask : "Nessuna");
                     })
                     .catch(err =>{ 
                         console.log("Error during get current task in progress: ",err); 
@@ -41,7 +39,7 @@ function HomeScreen({ navigation}) {
             } else {
                 getCurrentActivity()
                     .then(currentTask => {            
-                        setCurrentTask(currentTask == null ? "Nessuna" : currentTask);
+                        setCurrentTask(currentTask !== undefined && currentTask !== undefined ? currentTask : "Nessuna");
                     })  
                     .catch(err => {
                         console.log("Error during get current task in progress in local storage: ",err);
@@ -57,9 +55,7 @@ function HomeScreen({ navigation}) {
         if(isConnected){
             getTasksInProgress(userId)
                 .then(tasks => {
-                    if (tasks.length > 0) {
-                        setCurrentTask(tasks[0].nameTask);
-                    }
+                    setCurrentTask( tasks !== undefined && tasks !== undefined && tasks.length > 0 ?  tasks[0].nameTask : "Nessuna");
                 })
                 .catch(err =>{ 
                     console.log("Error during get current task in progress: ",err); 
@@ -67,13 +63,13 @@ function HomeScreen({ navigation}) {
 
         } else {
             getCurrentActivity()
-                .then(currentTask => {                   
-                    setCurrentTask(currentTask == null ? "Nessuna" : currentTask);
+                .then(currentTask => {            
+                    setCurrentTask(currentTask !== undefined && currentTask !== undefined ? currentTask : "Nessuna");
                 })  
                 .catch(err => {
                     console.log("Error during get current task in progress in local storage: ",err);
                 });
-        } 
+        }
         
     }, []);
 
@@ -139,7 +135,7 @@ function HomeScreen({ navigation}) {
                         () => navigation.navigate('StartTaskScreen', { currentTask: currentTask}) : 
                         () => handleTaskCompleted()}
                 >
-                    <Text style={styles.buttonText}>{currentTask == defaultTaskValue ? "Inizia Task" : "Termina Task"  }</Text>
+                    <Text style={styles.buttonText}>{currentTask == defaultTaskValue ? "Inizia Attività" : "Termina Attività"  }</Text>
                 </TouchableOpacity>
             </View>
         </View>

@@ -64,7 +64,7 @@ export const getTasksInProgress = async (userId) => {
         let response = await axios.get(`${API_BASE_URL}${userId}/getTaskInProgress`);
     
         if (response.status !== 200) {
-            throw new Error("Failed to fetch users");
+            throw new Error("Failed to fetch task in progress");
         }
 
         let tasks = await response.data.tasks;
@@ -78,8 +78,7 @@ export const getTasksInProgress = async (userId) => {
         if(axios.isCancel(err)){
             console.log('Data fetching cancelled');
         }else{
-            console.log("Error while fetching tasks in progress");
-            console.log(err);
+            console.err("Error while fetching tasks in progress: ". err);
         }
     }
 }

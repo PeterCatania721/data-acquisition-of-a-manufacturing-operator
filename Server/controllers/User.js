@@ -71,6 +71,7 @@ export const getTasksByGroup = async (req, res) => {
 export const getGroupTasks = async (req, res) => {
   try {
     const tasks = await TaskGroup.find();
+    console.log(tasks);
 
     res.status(200).json({ tasks });
   } catch (error) {
