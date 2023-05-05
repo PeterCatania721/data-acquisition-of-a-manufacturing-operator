@@ -51,52 +51,67 @@ function StartTaskScreen({ navigation}) {
   const {isConnected} = useContext(ConnectionContext);
 
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false);
-  const [clickedItemId, setClickedItemId] = useState('');
+  const [clickedItemId, setClickedItemId] = useState(null);
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     if (isConnected) {
       getTaskByGroup('Manufacturer Operator')
         .then((tasks) => {
-          console.log('tasks: ', tasks);
-          setTasks(tasks);
-          setClickedItemId(tasks[0]._id);
+          if (tasks && tasks.length > 0) {
+            setTasks(tasks);
+            setClickedItemId(tasks[0]._id);
+          } else {
+            setTasks([]);
+            setClickedItemId(null);
+          }
         })
         .catch((error) => console.log("error"));
     } else {
       getOfflineGroupTasksByGroup('Manufacturer Operator')
         .then((tasks) => {
+          if (tasks && tasks.length > 0) {
             setTasks(tasks);
             setClickedItemId(tasks[0]._id);
+          } else {
+            setTasks([]);
+            setClickedItemId(null);
+          }
         })
         .catch((error) => console.log(error));
     }
   }, [navigation]);
 
   function handleTaskPress(item){
-    setClickedItemId(item._id);
-    setConfirmationModalVisible(true);
+    if (item) {
+      setClickedItemId(item._id);
+      setConfirmationModalVisible(true);
+    }
   }
 
   async function handleModalConfirm(){
-    setConfirmationModalVisible(false);
-    const currentTask = tasks.find((task) => task._id === clickedItemId).nameTask;
+    if (tasks !== null && tasks !== undefined && tasks.length > 0) {
+      setConfirmationModalVisible(false);
+      const currentTask = tasks.find((task) => task._id === clickedItemId).nameTask;
 
-    const responce = await saveStartTask(currentTask, isConnected)
-      .then(() => {
-        if (!isConnected) {
-          navigation.navigate('Home');
-        }
-      })
-      .catch((error) => console.log(error));
+      if (currentTask !== null && currentTask !== undefined) {
+        const responce = await saveStartTask(currentTask, isConnected)
+          .then(() => {
+            if (!isConnected) {
+              navigation.navigate('Home');
+            }
+          })
+          .catch((error) => console.log(error));
 
-    if(isConnected) {
-      startTask(userId, currentTask)
-        .then((response) => {
-          navigation.navigate('Home');
-        })
-        .catch((error) => console.log(error));
-    }    
+        if(isConnected) {
+          startTask(userId, currentTask)
+            .then((response) => {
+              navigation.navigate('Home');
+            })
+            .catch((error) => console.log(error));
+        } 
+      }
+    }
   }
 
   function handleModalCancel(){
@@ -130,6 +145,10 @@ function StartTaskScreen({ navigation}) {
     },
   });  
 
+  const isDescriptionVisible = 
+    clickedItemId !== null && clickedItemId !== undefined && 
+    tasks !== null && tasks !== undefined && tasks.length > 0;
+
   return (
     <>
       <BlurView 
@@ -146,14 +165,14 @@ function StartTaskScreen({ navigation}) {
             onCancel={handleModalCancel}
           >
             <Text style={styles.descriptionText}>
-              {tasks.length > 0 && clickedItemId ? tasks.find(item => item._id === clickedItemId).nameTask : ''}
+              { isDescriptionVisible ? tasks.find(item => item._id === clickedItemId).nameTask : ''}
             </Text>
           </ConfirmationModal>
         
 
           <FlatList
             contentContainerStyle={styles.flatList}
-            data={tasks}
+            data={tasks ? tasks : []}
             renderItem={({ item, index }) => 
               <NextTaskListItem item={item} index={index} onTaskPress={() => handleTaskPress(item)} />}
             keyExtractor={(item) => item._id.toString()}

@@ -1,15 +1,16 @@
 // External imports
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { Text, TextInput, View, FlatList, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { BlurView } from 'expo-blur';
 import Accordion from 'react-native-collapsible/Accordion';
 
 // Internal imports
 import ConfirmationModal from '../components/modals/ConfirmationModal';
-import { addSurvey } from '../utils/requestManager';
+import { addSurvey, getTaskByGroup} from '../utils/requestManager';
 import { UserContext } from '../contexts.js';
 import { ConnectionContext } from '../contexts.js';
-import { saveSurveyData } from '../utils/localStorage';
+import { saveSurveyData, getOfflineGroupTasks  } from '../utils/localStorage';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const styles = StyleSheet.create({
   button: {
@@ -93,21 +94,31 @@ function NextTaskScreen({ navigation, route}) {
   const [activeSections, setActiveSections] = useState([]);
   const [submitUnexpectedActivity, setSubmitUnexpectedActivity] = useState(false);
   const [newUnexpectedActivity, setNewUnexpectedActivity] = useState('');
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     if (isConnected) {
       getTaskByGroup('Manufacturer Operator')
         .then((tasks) => {
-          console.log('tasks: ', tasks);
-          setTasks(tasks);
-          setClickedItemId(tasks[0]._id);
+          if (tasks && tasks.length > 0) {
+            setTasks(tasks);
+            setClickedItemId(tasks[0]._id);
+          } else {
+            setTasks([]);
+            setClickedItemId(null);
+          }
         })
         .catch((error) => console.log("error"));
     } else {
       getOfflineGroupTasksByGroup('Manufacturer Operator')
         .then((tasks) => {
+          if (tasks && tasks.length > 0) {
             setTasks(tasks);
             setClickedItemId(tasks[0]._id);
+          } else {
+            setTasks([]);
+            setClickedItemId(null);
+          }
         })
         .catch((error) => console.log(error));
     }
@@ -124,16 +135,21 @@ function NextTaskScreen({ navigation, route}) {
   ];
 
   function handleTaskPress(item){
-    setClickedItemId(item.id);
-    setConfirmationModalVisible(true);
+    if(item) {
+      setClickedItemId(item.id);
+      setConfirmationModalVisible(true);
+    }
   }
 
   function handleModalConfirm(){
     let taskName;
     if(submitUnexpectedActivity){
       taskName = newUnexpectedActivity;
-    } else {
+    } else if(clickedItemId && data) {
       taskName = (data.find(item => item.id === clickedItemId)).title;
+    } else {
+      console.error("Unexpected error: clickedItemId is null or data is null");
+      return;
     }
 
     setConfirmationModalVisible(false);
@@ -218,9 +234,13 @@ function NextTaskScreen({ navigation, route}) {
     },
     container: {
       flex: 1,
+      flexDirection: 'column',
       position: 'relative',
       justifyContent: 'center',
-      marginHorizontal: 10,
+      alignSelf: 'center',
+      marginEnd: 10,
+      marginStart: 10,
+
     },
     flatList: {
         backgroundColor: 'transparent',
@@ -240,7 +260,6 @@ function NextTaskScreen({ navigation, route}) {
     header: {
       backgroundColor: '#e74c3c',
       padding: 10,
-      marginTop: 20,
     },
     headerText: {
       fontWeight: 'bold',
@@ -265,7 +284,7 @@ function NextTaskScreen({ navigation, route}) {
       borderBottomLeftRadius: activeSections.length === 0 ? 10 : 0,
     },
     sectionsContainer: {
-      backgroundColor: 'white',
+      backgroundColor: 'transparent',
     },
     sectionTitle: {
       backgroundColor: 'white',
@@ -291,6 +310,19 @@ function NextTaskScreen({ navigation, route}) {
     },
   });  
 
+  const getChosenCurrentActivity = () => {
+    if(submitUnexpectedActivity){
+      return newUnexpectedActivity;
+
+    } else if(clickedItemId && data && data.length > 0) {
+      const findItem = data.find(item => item.id === clickedItemId);
+      return findItem ? findItem.title : "Nessuna attività selezionata";
+
+    } else {
+      return "Nessuna attività selezionata";
+    }
+  }
+
   return (
     <>
       <BlurView 
@@ -298,17 +330,16 @@ function NextTaskScreen({ navigation, route}) {
         tint="dark" 
         style={styles.absoluteBlurView}/>
 
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
 
           <ConfirmationModal 
-            title={clickedItemId != data[0].id || submitUnexpectedActivity ? "Prossima Attività" : "Attività Corrente:"}
+            title="Attività Corrente:"
             visible={confirmationModalVisible} 
-            onConfirm={handleModalConfirm} 
+            onConfirm={handleModalConfirm}
             onCancel={handleModalCancel}
           >
             <Text style={styles.descriptionText}>
-              {!submitUnexpectedActivity && data.find(item => item.id === clickedItemId).title}
-              {submitUnexpectedActivity && newUnexpectedActivity}
+              { getChosenCurrentActivity() }
             </Text>
           </ConfirmationModal>
           
@@ -320,6 +351,8 @@ function NextTaskScreen({ navigation, route}) {
             renderHeader={this._renderHeader}
             renderContent={this._renderContent}
             onChange={this._updateSections}
+
+            underlayColor={'transparent'}
             sectionContainerStyle={styles.sectionsContainer}
             sectionTitleStyle={styles.sectionTitle}
             headerStyle={styles.header}
@@ -329,13 +362,13 @@ function NextTaskScreen({ navigation, route}) {
 
           <FlatList
             contentContainerStyle={styles.flatList}
-            data={data}
+            data={data ? data : []}
             renderItem={({ item, index }) => 
               <NextTaskListItem item={item} index={index} onTaskPress={() => handleTaskPress(item)} />}
             keyExtractor={(item) => item.id.toString()}
           />
           
-      </View>
+      </SafeAreaView>
     </>
   );
 }
